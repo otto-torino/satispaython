@@ -1,4 +1,4 @@
-from paython.satispay.core import send_request
+from satispaython.core import send_request
 from cryptography.hazmat.primitives import serialization
 
 
