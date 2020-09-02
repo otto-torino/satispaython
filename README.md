@@ -2,6 +2,14 @@
 
 A simple utility library to manage Satispay payments following the [Web-button flow](https://developers.satispay.com/docs/web-button-pay).
 
+## Requirements
+
+* python 3.8
+* [`cryptography`](https://cryptography.io/en/latest/) >= 3.1
+* [`requests`](https://requests.readthedocs.io/en/master/) >= 2.24
+
+This repo comes with Pipfiles, so if you use [`pipenv`](https://pipenv-fork.readthedocs.io/en/latest/) just clone this repo and do `pipenv install` to create the virtual environment.
+
 ## Usage
 
 ### Key generation
