@@ -67,7 +67,7 @@ satispay.test_authentication(key_id, rsa_key)
 satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, external_code=None, metadata=None)
 ```
 
-* **Get a payment details**
+* **Get payment details**
 
 ```python
 satispay.get_payment_details(key_id, rsa_key, payment_id)
