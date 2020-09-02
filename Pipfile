@@ -4,10 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-cryptography = "~=3.1"
-requests = "~=2.24"
+requests = ">=2.24"
+cryptography = ">=3.1"
 
 [dev-packages]
+setuptools = "*"
+wheel = "*"
+twine = "*"
 
 [requires]
 python_version = "3.8"

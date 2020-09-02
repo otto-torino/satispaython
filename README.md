@@ -1,6 +1,6 @@
 # paython
 
-A simple utility library to manage Satispay payments following the [Web-button flow](https://developers.satispay.com/docs/web-button-pay).
+A simple library to manage Satispay payments following the [Web-button flow](https://developers.satispay.com/docs/web-button-pay).
 
 ## Requirements
 
