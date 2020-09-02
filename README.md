@@ -6,7 +6,7 @@ A simple utility library to manage Satispay payments following the [Web-button f
 
 ### Key generation
 
-Firs of all you nedd an RSA private key. You can generate the key by yourself or you may use the provided utility functions:
+Firs of all you nedd an RSA private key. You may generate the key by yourself or you may use the provided utility functions:
 
 ```python
 from paython.utils import key_management
@@ -15,7 +15,7 @@ rsa_key = key_management.generate_key()
 key_management.write_key(rsa_key, 'path/to/file.pem')
 ```
 
-In order to load the key from a PEM encoded FILE you can use the utility function:
+In order to load the key from a PEM encoded file you may use the utility function:
 
 ```python
 rsa_key = key_management.load_key('path/to/file.pem')
@@ -25,7 +25,7 @@ rsa_key = key_management.load_key('path/to/file.pem')
 
 > :information_source: Paython key management is based on [`cryptography`](https://cryptography.io/en/latest/) so all the functions which require an RSA key parameter expect an object of the class [`RSAPrivateKey`](https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey). If you don't use the `load_key` function then make sure your key is an instance of [`RSAPrivateKey`](https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey).
 
-You may protect your key with a password simply adding the `password` parameter to those functions:
+You may protect your key with a password simply adding the `password` parameter:
 
 ```python
 rsa_key = key_management.generate_key()
@@ -43,7 +43,7 @@ from paython.satispay import satisapy
 
 Then you can:
 
-* Obtain a key-id using a token
+* **Obtain a key-id using a token**
 
 ```python
 satispay.obtain_key_id(rsa_key, token)
@@ -53,7 +53,7 @@ satispay.obtain_key_id(rsa_key, token)
 
 > :warning: Tokens are disposable, then the KeyId must be saved right after its creation.
 
-* Make an authentication test
+* **Make an authentication test**
 
 ```python
 satispay.test_authentication(key_id, rsa_key)
@@ -61,13 +61,13 @@ satispay.test_authentication(key_id, rsa_key)
 
 > :information_source: Authentication tests work only on [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints.
 
-* Create a payment
+* **Create a payment**
 
 ```python
-satispay.create_payment(key_id, rsa_key, amount_unit, currency, external_code=None, callback_url=None, metadata=None)
+satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, external_code=None, metadata=None)
 ```
 
-* Get a payment details
+* **Get a payment details**
 
 ```python
 satispay.get_payment_details(key_id, rsa_key, payment_id)
@@ -79,6 +79,6 @@ If you need to use the [Sandbox](https://developers.satispay.com/docs/sandbox-ac
 
 ```python
 satispay.obtain_key_id(key, token, staging=True)
-satispay.create_payment(key_id, key, amount_unit, currency, external_code=None, callback_url=None, metadata=None, staging=True)
+satispay.create_payment(key_id, key, amount_unit, currency, callback_url, external_code=None, metadata=None, staging=True)
 satispay.get_payment_details(key_id, key, payment_id, staging=True)
 ```
