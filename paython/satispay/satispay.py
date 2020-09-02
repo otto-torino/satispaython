@@ -16,7 +16,7 @@ def test_authentication(key_id, key):
     return send_request(key_id, key, 'post', target, body, True)
 
 
-def create_payment(key_id, key, amount_unit, currency, external_code=None, callback_url=None, metadata=None, staging=False):
+def create_payment(key_id, key, amount_unit, currency, callback_url, external_code=None, metadata=None, staging=False):
     target = '/g_business/v1/payments'  
     body = '{ "flow": "MATCH_CODE", "amount_unit": %d, "currency": "%s"' % (amount_unit, currency)
     if external_code:
