@@ -80,7 +80,16 @@ satispay.test_authentication(key_id, rsa_key)
 * **Create a payment**
 
 ```python
-satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, external_code=None, metadata=None)
+satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, expiration_date=None, external_code=None, metadata=None, idempotency_key=None)
+```
+
+You may use the utility function `format_datetime` to get a correctly formatted `expiration_date` to supply to the request:
+
+```python
+from datetime import datetime, timezone, timedelta
+from satispaython.utils.time import format_datetime
+expiration_date = datetime.now(timezone.utc) + timedelta(hours=1)
+expiration_date = format_datetime(expiration_date)
 ```
 
 * **Get payment details**
@@ -94,7 +103,7 @@ Satispaython web requests are based on [`requests`](https://requests.readthedocs
 If you need to use the [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints, simply set the `staging` parameter to `True`:
 
 ```python
-satispay.obtain_key_id(key, token, staging=True)
-satispay.create_payment(key_id, key, amount_unit, currency, callback_url, external_code=None, metadata=None, staging=True)
-satispay.get_payment_details(key_id, key, payment_id, staging=True)
+satispay.obtain_key_id(rsa_key, token, staging=True)
+satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, expiration_date=None, external_code=None, metadata=None, idempotency_key=None, staging=True)
+satispay.get_payment_details(key_id, rsa_key, payment_id, staging=True)
 ```

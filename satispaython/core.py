@@ -42,19 +42,21 @@ def compute_authorization_headers(key, key_id, method, target, host, body):
     return { 'Host': host, 'Date': date, 'Digest': digest, 'Authorization': header }
 
 
-def generate_headers(key, key_id, method, target, host, body):
+def generate_headers(key, key_id, method, target, host, body, idempotency_key):
     headers = { 'Accept': 'application/json' }
     if method == 'post' or method == 'put':
         headers = { **headers, 'Content-Type': 'application/json' }
+    if idempotency_key:
+        headers = { **headers, 'Idempotency-Key': idempotency_key }
     if key and key_id:
         authorization_headers = compute_authorization_headers(key, key_id, method, target, host, body)
         headers = { **headers, **authorization_headers }
     return headers
 
 
-def send_request(key_id, key, method, target, body, staging):
-    host = 'staging.authservices.satispay.com' if staging else 'authservices.satispay.com'
-    headers = generate_headers(key, key_id, method, target, host, body)
+def send_request(key_id, key, method, target, body, idempotency_key, staging):
+    host = 'staging.authservices.satispay.com' if staging == True else 'authservices.satispay.com'
+    headers = generate_headers(key, key_id, method, target, host, body, idempotency_key)
     url = 'https://' + host + target
     if method == 'get':
         return requests.get(url=url, data=body, headers=headers)
