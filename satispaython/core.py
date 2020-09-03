@@ -1,4 +1,4 @@
-import requests
+import requests, json
 
 from satispaython.exceptions import UnexpectedRequestMethod
 from base64 import b64encode
@@ -15,11 +15,12 @@ def get_formatted_date():
 def compute_digest(body):
     body = body.encode('utf-8')
     digest = b64encode(sha256(body).digest())
-    return 'SHA-256=' + digest.decode('utf-8')
+    digest = digest.decode('utf-8')
+    return f'SHA-256={digest}' 
 
 
 def generate_string(method, target, host, date, digest):
-    return '(request-target): %s %s\nhost: %s\ndate: %s\ndigest: %s' % (method, target, host, date, digest)
+    return f'(request-target): {method} {target}\nhost: {host}\ndate: {date}\ndigest: {digest}'
 
 
 def sign_string(key, string):
@@ -30,7 +31,7 @@ def sign_string(key, string):
 
 
 def compute_authorization_header(key_id, signature):
-    return 'Signature keyId="%s", algorithm="rsa-sha256", headers="(request-target) host date digest", signature="%s"' % (key_id, signature)
+    return f'Signature keyId="{key_id}", algorithm="rsa-sha256", headers="(request-target) host date digest", signature="{signature}"'
     
 
 def compute_authorization_headers(key, key_id, method, target, host, body):
@@ -56,8 +57,9 @@ def generate_headers(key, key_id, method, target, host, body, idempotency_key):
 
 def send_request(key_id, key, method, target, body, idempotency_key, staging):
     host = 'staging.authservices.satispay.com' if staging == True else 'authservices.satispay.com'
+    body = json.dumps(body) if body else ''
     headers = generate_headers(key, key_id, method, target, host, body, idempotency_key)
-    url = 'https://' + host + target
+    url = f'https://{host}{target}'
     if method == 'get':
         return requests.get(url=url, data=body, headers=headers)
     elif method == 'post':
