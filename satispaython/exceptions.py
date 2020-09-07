@@ -1,8 +1,8 @@
-class PaythonException(Exception):
+class SatispaythonException(Exception):
     def __init__(self, message):
         super().__init__(message)
 
 
-class UnexpectedRequestMethod(PaythonException):
+class UnexpectedRequestMethod(SatispaythonException):
     def __init__(self, message):
         super().__init__(message)
