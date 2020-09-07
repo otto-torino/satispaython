@@ -1,6 +1,5 @@
-from satispaython.core import send_request
+from satispaython._core import send_request
 from cryptography.hazmat.primitives import serialization
-
 
 def obtain_key_id(key, token, staging=False):
     target = '/g_business/v1/authentication_keys'

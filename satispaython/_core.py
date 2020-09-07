@@ -1,6 +1,6 @@
 import requests, json
 
-from satispaython.exceptions import UnexpectedRequestMethod
+from satispaython._exceptions import UnexpectedRequestMethod
 from base64 import b64encode
 from hashlib import sha256
 from datetime import datetime, timezone

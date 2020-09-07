@@ -25,16 +25,18 @@ This repo comes with Pipfiles, so if you use [`pipenv`](https://pipenv-fork.read
 Firs of all you nedd an RSA private key. You may generate the key by yourself or you may use the provided utility functions:
 
 ```python
-from satispaython.utils import key_management
+from satispaython.utils import generate_key, write_key
 
-rsa_key = key_management.generate_key()
-key_management.write_key(rsa_key, 'path/to/file.pem')
+rsa_key = generate_key()
+write_key(rsa_key, 'path/to/file.pem')
 ```
 
 In order to load the key from a PEM encoded file you may use the utility function:
 
 ```python
-rsa_key = key_management.load_key('path/to/file.pem')
+from satispaython.utils import load_key
+
+rsa_key = load_key('path/to/file.pem')
 ```
 
 > :information_source: The function `write_key` stores the key in the PEM format. If you generate the key with any other method and you would like to use the `load_key` function, please make sure the key is stored within a file in the PEM format.
@@ -44,17 +46,16 @@ rsa_key = key_management.load_key('path/to/file.pem')
 You may protect your key with a password simply adding the `password` parameter:
 
 ```python
-rsa_key = key_management.generate_key()
-key_management.write_key(rsa_key, 'path/to/file.pem', password='mypassword')
-rsa_key = key_management.load_key('path/to/file.pem', password='mypassword')
+write_key(rsa_key, 'path/to/file.pem', password='mypassword')
+rsa_key = load_key('path/to/file.pem', password='mypassword')
 ```
 
 ### Satispay API
 
-In order to use the [Satispay API](https://developers.satispay.com/reference) import the following module:
+In order to use the [Satispay API](https://developers.satispay.com/reference) simply import satispaython:
 
 ```python
-from satispaython import satisapy
+import satispaython as satispay
 ```
 
 Then you can:
@@ -75,7 +76,7 @@ satispay.obtain_key_id(rsa_key, token)
 satispay.test_authentication(key_id, rsa_key)
 ```
 
-> :information_source: Authentication tests work only on [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints.
+> :information_source: Authentication tests work on [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints only.
 
 * **Create a payment**
 
@@ -87,7 +88,8 @@ You may use the utility function `format_datetime` to get a correctly formatted 
 
 ```python
 from datetime import datetime, timezone, timedelta
-from satispaython.utils.time import format_datetime
+from satispaython.utils import format_datetime
+
 expiration_date = datetime.now(timezone.utc) + timedelta(hours=1)
 expiration_date = format_datetime(expiration_date)
 ```
