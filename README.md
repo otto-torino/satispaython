@@ -4,7 +4,7 @@ A simple library to manage Satispay payments following the [Web-button flow](htt
 
 ## Requirements
 
-* python 3.8
+* python >= 3.6
 * [`cryptography`](https://cryptography.io/en/latest/) >= 3.1
 * [`requests`](https://requests.readthedocs.io/en/master/) >= 2.24
 
