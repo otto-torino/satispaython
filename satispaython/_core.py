@@ -1,6 +1,5 @@
 import requests, json
 
-from satispaython._exceptions import UnexpectedRequestMethod
 from base64 import b64encode
 from hashlib import sha256
 from datetime import datetime, timezone
@@ -45,7 +44,7 @@ def compute_authorization_headers(key, key_id, method, target, host, body):
 
 def generate_headers(key, key_id, method, target, host, body, idempotency_key):
     headers = { 'Accept': 'application/json' }
-    if method == 'post' or method == 'put':
+    if method in ('post', 'put'):
         headers = { **headers, 'Content-Type': 'application/json' }
     if idempotency_key:
         headers = { **headers, 'Idempotency-Key': idempotency_key }
@@ -60,9 +59,4 @@ def send_request(key_id, key, method, target, body, idempotency_key, staging):
     body = json.dumps(body) if body else ''
     headers = generate_headers(key, key_id, method, target, host, body, idempotency_key)
     url = f'https://{host}{target}'
-    if method == 'get':
-        return requests.get(url=url, data=body, headers=headers)
-    elif method == 'post':
-        return requests.post(url=url, data=body, headers=headers)
-    else:
-        raise exceptions.UnexpectedRequestMethod('The request method is invalid (should be "get" or "post")')
+    return getattr(requests, method)(url=url, data=body, headers=headers)
