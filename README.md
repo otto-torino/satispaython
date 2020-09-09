@@ -10,13 +10,7 @@ A simple library to manage Satispay payments following the [Web-button flow](htt
 
 ## Installation
 
-### pip
-
 You can install this package with pip: `pip install satispaython`.
-
-### clone
-
-This repo comes with Pipfiles, so if you use [`pipenv`](https://pipenv-fork.readthedocs.io/en/latest/) just clone this repo and do `pipenv install` to create the virtual environment.
 
 ## Usage
 

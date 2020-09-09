@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="satispaython",
-    version="0.1.7",
+    version="0.2.0",
     author="Daniele Pira",
     author_email="daniele.pira@otto.to.it",
-    description="A simple library to manage Satispay payments",
+    description="A simple library to manage Satispay payments following the Web-button flow.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/otto-torino/satispaython",
