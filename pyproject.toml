@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "satispaython"
-version = "0.2.0"
+version = "0.2.1"
 description = "A simple library to manage Satispay payments following the Web-button flow."
 license = "GPL-3.0-or-later"
 authors = ["Daniele Pira <daniele.pira@otto.to.it>"]
@@ -13,3 +13,7 @@ classifiers = ["Topic :: Software Development :: Libraries :: Python Modules"]
 python = "^3.6"
 requests = "^2"
 cryptography = "^3"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
