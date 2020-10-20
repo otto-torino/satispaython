@@ -5,8 +5,8 @@ A simple library to manage Satispay payments following the [Web-button flow](htt
 ## Requirements
 
 * python >= 3.6
-* [`cryptography`](https://cryptography.io/en/latest/) >= 3.1
-* [`requests`](https://requests.readthedocs.io/en/master/) >= 2.24
+* [`cryptography`](https://github.com/pyca/cryptography) >= 3.1
+* [`requests`](https://github.com/psf/requests) >= 2.24
 
 ## Installation
 
@@ -54,47 +54,47 @@ import satispaython as satispay
 
 Then you can:
 
-* **Obtain a key-id using a token**
+#### Obtain a key-id using a token
 
-  ```python
-  satispay.obtain_key_id(rsa_key, token)
-  ```
+```python
+satispay.obtain_key_id(rsa_key, token)
+```
 
-  > :information_source: The token is the activation code that can be generated from the Satispay Dashboard (or provided manually for Sandbox account).
+> :information_source: The token is the activation code that can be generated from the Satispay Dashboard (or provided manually for Sandbox account).
 
-  > :warning: Tokens are disposable, then the KeyId must be saved right after its creation.
+> :warning: Tokens are disposable! The key-id should be saved right after its creation.
 
-* **Make an authentication test**
+#### Make an authentication test
 
-  ```python
-  satispay.test_authentication(key_id, rsa_key)
-  ```
+```python
+satispay.test_authentication(key_id, rsa_key)
+```
 
-  > :information_source: Authentication tests work on [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints only.
+> :information_source: Authentication tests work on [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints only.
 
-* **Create a payment**
+#### Create a payment
 
-  ```python
-  satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, expiration_date=None, external_code=None, metadata=None, idempotency_key=None)
-  ```
+```python
+satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, expiration_date=None, external_code=None, metadata=None, idempotency_key=None)
+```
 
-  You may use the utility function `format_datetime` to get a correctly formatted `expiration_date` to supply to the request:
+You may use the utility function `format_datetime` to get a correctly formatted `expiration_date` to supply to the request:
 
-  ```python
-  from datetime import datetime, timezone, timedelta
-  from satispaython.utils import format_datetime
+```python
+from datetime import datetime, timezone, timedelta
+from satispaython.utils import format_datetime
 
-  expiration_date = datetime.now(timezone.utc) + timedelta(hours=1)
-  expiration_date = format_datetime(expiration_date)
-  ```
+expiration_date = datetime.now(timezone.utc) + timedelta(hours=1)
+expiration_date = format_datetime(expiration_date)
+```
 
-* **Get payment details**
+#### Get payment details
 
-  ```python
-  satispay.get_payment_details(key_id, rsa_key, payment_id)
-  ```
+```python
+satispay.get_payment_details(key_id, rsa_key, payment_id)
+```
 
-Satispaython web requests are based on [`requests`](https://requests.readthedocs.io/en/master/) so those functions return an instance of [Response](https://requests.readthedocs.io/en/latest/api/#requests.Response). On success, Satispay APIs respond with a JSON encoded body, so you can simply check for the [`response.status_code`](https://requests.readthedocs.io/en/latest/api/#requests.Response.status_code) and eventually get the content with [`response.json()`](https://requests.readthedocs.io/en/latest/api/#requests.Response.json).
+Satispaython web requests are based on [`requests`](https://requests.readthedocs.io/en/master/) so those functions return an instance of [`Response`](https://requests.readthedocs.io/en/latest/api/#requests.Response). On success, the Satispay API responds with a JSON encoded body, so you can simply check for the [`response.status_code`](https://requests.readthedocs.io/en/latest/api/#requests.Response.status_code) and eventually get the content with [`response.json()`](https://requests.readthedocs.io/en/latest/api/#requests.Response.json).
 
 If you need to use the [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints, simply set the `staging` parameter to `True`:
 
