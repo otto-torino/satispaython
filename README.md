@@ -48,7 +48,7 @@ rsa_key = load_key('path/to/file.pem', password='mypassword')
 
 Satispaython web requests are based on [`requests`](https://requests.readthedocs.io/en/master/) so the following functions return an instance of [`Response`](https://requests.readthedocs.io/en/latest/api/#requests.Response). On success, the Satispay API responds with a JSON encoded body, so you can simply check for the [`response.status_code`](https://requests.readthedocs.io/en/latest/api/#requests.Response.status_code) and eventually get the content with [`response.json()`](https://requests.readthedocs.io/en/latest/api/#requests.Response.json).
 
-> :information_source: If you need to use the Sandbox endpoints be sure to read the [section](https://github.com/otto-torino/django-satispaython#sandbox-endpoints).
+> :information_source: If you need to use the Sandbox endpoints be sure to read the [section](https://github.com/otto-torino/satispaython#sandbox-endpoints).
 
 In order to use the [Satispay API](https://developers.satispay.com/reference) simply import satispaython:
 
