@@ -46,6 +46,10 @@ rsa_key = load_key('path/to/file.pem', password='mypassword')
 
 ### Satispay API
 
+Satispaython web requests are based on [`requests`](https://requests.readthedocs.io/en/master/) so the following functions return an instance of [`Response`](https://requests.readthedocs.io/en/latest/api/#requests.Response). On success, the Satispay API responds with a JSON encoded body, so you can simply check for the [`response.status_code`](https://requests.readthedocs.io/en/latest/api/#requests.Response.status_code) and eventually get the content with [`response.json()`](https://requests.readthedocs.io/en/latest/api/#requests.Response.json).
+
+> :information_source: If you need to use the Sandbox endpoints be sure to read the [section](https://github.com/otto-torino/django-satispaython#sandbox-endpoints).
+
 In order to use the [Satispay API](https://developers.satispay.com/reference) simply import satispaython:
 
 ```python
@@ -57,7 +61,7 @@ Then you can:
 #### Obtain a key-id using a token
 
 ```python
-satispay.obtain_key_id(rsa_key, token)
+response = satispay.obtain_key_id(rsa_key, token)
 ```
 
 > :information_source: The token is the activation code that can be generated from the Satispay Dashboard (or provided manually for Sandbox account).
@@ -67,7 +71,7 @@ satispay.obtain_key_id(rsa_key, token)
 #### Make an authentication test
 
 ```python
-satispay.test_authentication(key_id, rsa_key)
+response = satispay.test_authentication(key_id, rsa_key)
 ```
 
 > :information_source: Authentication tests work on [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints only.
@@ -75,7 +79,7 @@ satispay.test_authentication(key_id, rsa_key)
 #### Create a payment
 
 ```python
-satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, expiration_date=None, external_code=None, metadata=None, idempotency_key=None)
+response = satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, expiration_date=None, external_code=None, metadata=None, idempotency_key=None)
 ```
 
 You may use the utility function `format_datetime` to get a correctly formatted `expiration_date` to supply to the request:
@@ -91,15 +95,15 @@ expiration_date = format_datetime(expiration_date)
 #### Get payment details
 
 ```python
-satispay.get_payment_details(key_id, rsa_key, payment_id)
+response = satispay.get_payment_details(key_id, rsa_key, payment_id)
 ```
 
-Satispaython web requests are based on [`requests`](https://requests.readthedocs.io/en/master/) so those functions return an instance of [`Response`](https://requests.readthedocs.io/en/latest/api/#requests.Response). On success, the Satispay API responds with a JSON encoded body, so you can simply check for the [`response.status_code`](https://requests.readthedocs.io/en/latest/api/#requests.Response.status_code) and eventually get the content with [`response.json()`](https://requests.readthedocs.io/en/latest/api/#requests.Response.json).
+### Sandbox endpoints
 
-If you need to use the [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints, simply set the `staging` parameter to `True`:
+By default satispaython uses the production Satispay API. If you need to use the [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints, simply set the `staging` parameter to `True`:
 
 ```python
-satispay.obtain_key_id(rsa_key, token, staging=True)
-satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, expiration_date=None, external_code=None, metadata=None, idempotency_key=None, staging=True)
-satispay.get_payment_details(key_id, rsa_key, payment_id, staging=True)
+response = satispay.obtain_key_id(rsa_key, token, staging=True)
+response = satispay.create_payment(key_id, rsa_key, amount_unit, currency, callback_url, expiration_date=None, external_code=None, metadata=None, idempotency_key=None, staging=True)
+response = satispay.get_payment_details(key_id, rsa_key, payment_id, staging=True)
 ```
