@@ -20,7 +20,7 @@ def write_key(key, path, password=None):
 def load_key(path, password=None):
     if password:
         password = password.encode('utf-8')
-    with open(path, "rb") as file:
+    with open(path, 'rb') as file:
         return _serialization.load_pem_private_key(file.read(), password)
 
 

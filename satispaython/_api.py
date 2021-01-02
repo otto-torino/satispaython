@@ -19,11 +19,11 @@ def create_payment(key_id, key, amount_unit, currency, callback_url, expiration_
     target = '/g_business/v1/payments'
     body = { 'flow': 'MATCH_CODE', 'amount_unit': amount_unit, 'currency': currency, 'callback_url': callback_url }
     if external_code:
-        body = { **body, 'external_code': external_code }
+        body |= { 'external_code': external_code }
     if metadata:
-        body = { **body, 'metadata': metadata }
+        body |= { 'metadata': metadata }
     if expiration_date:
-        body = { **body, 'expiration_date': expiration_date }
+        body |= { 'expiration_date': expiration_date }
     return send_request(key_id, key, 'post', target, body, idempotency_key, staging)
 
 

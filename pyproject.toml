@@ -11,8 +11,12 @@ classifiers = ["Topic :: Software Development :: Libraries :: Python Modules"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-requests = "^2.24"
-cryptography = "^3.2"
+requests = "^2"
+cryptography = "^3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6"
+responses = "^0"
 
 [build-system]
 requires = ["poetry>=0.12"]
