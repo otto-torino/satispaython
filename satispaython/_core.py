@@ -45,16 +45,16 @@ def compute_authorization_headers(key_id, key, method, target, host, body):
 def generate_headers(key_id, key, method, target, host, body, idempotency_key):
     headers = { 'Accept': 'application/json' }
     if method in ('post', 'put'):
-        headers |= { 'Content-Type': 'application/json' }
+        headers.update({ 'Content-Type': 'application/json' })
     if idempotency_key:
-        headers |= { 'Idempotency-Key': idempotency_key }
+        headers.update({ 'Idempotency-Key': idempotency_key })
     if key_id and key:
-        headers |= compute_authorization_headers(key_id, key, method, target, host, body)
+        headers.update(compute_authorization_headers(key_id, key, method, target, host, body))
     return headers
 
 
 def send_request(key_id, key, method, target, body, idempotency_key, staging):
-    host = 'staging.authservices.satispay.com' if staging == True else 'authservices.satispay.com'
+    host = 'staging.authservices.satispay.com' if staging else 'authservices.satispay.com'
     body = json.dumps(body) if body else ''
     headers = generate_headers(key_id, key, method, target, host, body, idempotency_key)
     url = f'https://{host}{target}'
