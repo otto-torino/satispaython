@@ -1,9 +1,10 @@
-from pytest import fixture, raises
+from pytest import fixture, raises, mark
 from datetime import datetime
-from satispaython.utils import *
+from cryptography.hazmat.primitives import serialization
+from satispaython.utils import generate_key, write_key, load_key, format_datetime
 
 
-@fixture
+@fixture(scope='module')
 def key_path(tmp_path_factory):
     return tmp_path_factory.getbasetemp().joinpath('test.pem')
 
@@ -19,7 +20,7 @@ class TestKeyUtils:
 
     class TestGenerateKey:
 
-        def test_generate_key(self, key):
+        def test_generate_key(self):
             key = generate_key()
             assert key.private_numbers().public_numbers.e == 65537
             assert key.key_size == 4096
@@ -29,20 +30,32 @@ class TestKeyUtils:
         def test_write_key(self, key, key_path):
             write_key(key, key_path)
             assert key_path.exists()
+            with open(key_path, 'rb') as file:
+                key = serialization.load_pem_private_key(file.read(), None)
+                assert key.private_numbers().public_numbers.e == 65537
+                assert key.key_size == 4096
 
         def test_write_key_with_password(self, key, key_path):
             write_key(key, key_path, 'password')
             assert key_path.exists()
+            with open(key_path, 'rb') as file:
+                key = serialization.load_pem_private_key(file.read(), b'password')
+                assert key.private_numbers().public_numbers.e == 65537
+                assert key.key_size == 4096
 
     class TestLoadKey:
 
         def test_load_unencrypted_key(self, key, key_path):
             write_key(key, key_path)
             key = load_key(key_path)
+            assert key.private_numbers().public_numbers.e == 65537
+            assert key.key_size == 4096
 
         def test_load_encrypted_key_with_password(self, key, key_path):
             write_key(key, key_path, 'password')
             key = load_key(key_path, 'password')
+            assert key.private_numbers().public_numbers.e == 65537
+            assert key.key_size == 4096
 
         def test_load_unencrypted_key_with_password(self, key, key_path):
             write_key(key, key_path)
