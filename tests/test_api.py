@@ -14,6 +14,10 @@ def public_key(key):
 def key_id():
     return '4ekqhmf77q95deciis2frre12el393rteletbrg4rffqri3n58lsjsvf6uph934o7vr69r93iu4ifc3tkeidlg5fhoogo3grmh99lr2g94a6aerbf56m48og47e6vnbfu13rf1vvj3l4b3mn3qd2ttoc4a8hh2jgb589s59d56tdmp7dkuobesvfmnnpf8cmg7646do5'
 
+@fixture(scope='module')
+def payment_id():
+    return '2936affa-ab4c-4daa-9bec-7cafbce4caa1'
+
 
 class TestObtainKeyID:
 
@@ -119,5 +123,38 @@ class TestCreatePaymet:
             'Authorization': f'Signature keyId="{key_id}", algorithm="rsa-sha256", headers="(request-target) host date digest", signature="OEC3RHh/Ey/QD1t6mDspqLD2xw+LsNgpkFyiRucbN3ps8t0/ko//zugE+wf36adPa4088cETicPf2ztLJaoUq39/+L0mGco+ztLDXFwN2Iu7FQveq5GZ7bfMhrz/RTeqQ5VlGA5Bs570qYyioz1eN5uR4pEMDT1X5mdAuAVQf2mH+AFupPxjxWh8KMr4hd1y9zD4ivnbZqAPUmX8FMJbrt+i2n9ZbSsuGD6cqDtYOCsG8Mu8aDDx148W94Ik+eyhutXjHK6YO0aTtsnLhN4JVJrFsC3sIJZc2A1gUSDRIQbiqmFWPx5cyP/HYUnPPVU2oCE9dXtTJYKFoflXm4YThF1DHFJBexKI6siqnSeT+VqopwDg7iD2k3CzEujK4SrviINdgwn0M5n1gBwmJED0Juj0zRbVZOk+cwHnebFgp+9HjW0zhgcE0uSiviFNnicBD7t7QVKYdTN09e9JUSmV9C+wjE+umF9Kkk9ZYe4AL6K9p9tYafGMZ1hzktSV/EfCLi440hNxC/b6kheAEegVnHhQa4gdHscVBL1m7nVJm1UmbnfYaf313XdXXyeRz1/DxP7vlK6Z5jenIkEWCaiJfwFKp+EmVfdh7p74URivbYp8IK7hauY27c9BWZheSCATDlrSrgvXrhILWPBw8g8OIKfWgH+x4HKjtrJ6parAjW8="'
         }.items()
 
-# def test_get_payment_details(self, key_id, key, payment_id, staging=False):
-#     rsps.add(responses.GET, f'https://authservices.satispay.com/g_business/v1/payments/{payment_id}', body='{}', status=200)
+class TestGetPaymentDetails:
+
+    @responses.activate
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    def test_staging(self, key_id, key, payment_id):
+        responses.add(responses.GET, f'https://staging.authservices.satispay.com/g_business/v1/payments/{payment_id}', body='{}', status=200)
+        response = satispaython.get_payment_details(key_id, key, payment_id, True)
+        request = responses.calls[0].request
+        assert len(responses.calls) == 1
+        assert request.method == 'GET'
+        assert request.body == None
+        assert request.headers.items() >= {
+            'Accept': 'application/json',
+            'Host': 'staging.authservices.satispay.com',
+            'Date': 'Mon, 18 Mar 2019 15:10:24 +0000',
+            'Digest': 'SHA-256=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=',
+            'Authorization': f'Signature keyId="{key_id}", algorithm="rsa-sha256", headers="(request-target) host date digest", signature="ZhkBZSOvVBoB4/inTKc4j9daeDhii6xc22mfLurTc8KvDQiGu6eGxaOFfmgSFrEWGbQ3ZJsLP4E1Nh6K5vCvuiUqVZzVVtiC8LI6rdOHieYPoCRCgJ2wgJUPC4azU/pzlDnZcZOzjEJIHp0j3m8Sn/86ibMzpueoF7IZjquhp+tMom702kK2yzxgDfAK7Ug5yjS87m/APbMZMVnuCZtZt0K/21hBXQs6upge5q7j7sR24usJqW446VSNkE70KUfj3ymqa+iftcocAgyvTUYcz6Sf9vycanCip6f4la5j93WPBRl3e0VtVYRgomaHM6vwbnJwu5/5F/xjX3JWaEO0UpLVJr4oK7GV1tD5610Z+P5XLVRyCAIXZxHd7eKAnTE/9Lg5mOMQ2pEwHwGzghMdm857ZplZngnH4yeKv1TVBni5p/7tkW+Cle2VWtn+1E+uonlX1tc+48GgWp3XstYES03i4ClUWBHetj1J5ti0+3reW0xOeomcXD4fcdpwXSyC0S7NDjHKqwnzEfUVD9lZgsJKP8Y+N2wTRcjPZbM6sLj8nmM6SPFgFaYCCubnmucZxf9pVoX4PN46Ad8RFaAzlykRd2GnleNIxtqG2TdTnYn53eEffcEDw9/7IuRrn/JnbjeatN81cIdqTuaJWypGaaMg+NPr//gyuE5eU8vH56I="'
+        }.items()
+
+    @responses.activate
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    def test_staging(self, key_id, key, payment_id):
+        responses.add(responses.GET, f'https://authservices.satispay.com/g_business/v1/payments/{payment_id}', body='{}', status=200)
+        response = satispaython.get_payment_details(key_id, key, payment_id)
+        request = responses.calls[0].request
+        assert len(responses.calls) == 1
+        assert request.method == 'GET'
+        assert request.body == None
+        assert request.headers.items() >= {
+            'Accept': 'application/json',
+            'Host': 'authservices.satispay.com',
+            'Date': 'Mon, 18 Mar 2019 15:10:24 +0000',
+            'Digest': 'SHA-256=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=',
+            'Authorization': f'Signature keyId="{key_id}", algorithm="rsa-sha256", headers="(request-target) host date digest", signature="YQDOUhmUou6hk1G4Hs00/3QXiblkPItg5OYEIrgNGh/6amBYcsOOm7m5lR7ar1AG2Ys5945eDfwByaRLDiK9l9L0s7KxOPpEDX1cxVHy65gcvSUZtg1OvHFygaPse2H91XTjaK2DPytpF59+vhKovR37RuPyAISMkDjlG2ZBSfc0GGFRMjv00xqrAs/ryWaaZjhp4mrcwp8OlUKKNXCHF2WDIZr8lcEBvWnavAVwJn8FIxFmZ1bbWNszEnqz1l4ub0+bmTrYoXw7VHXV7v28F0hAcBl8LtXCJWRh9LzcpdMN038Vf7VDCuLAN8Vhrh1srdZEjH1vebdIlVC1QUfCK1vfbr9BEr9ZAmZXGLzZagTNZpAoIm9Zc2RfB+XPzKub61AGKU06TU/dDaNIs9kVl2QBKdtMLXWX2YBqRVkKcRF7x8f7ESdgNk+kJ9GzFxGSHbomt9ObeHqDJiR2GPgVFIj/LtwhBxuq69AmRZcMEf6/AoulHUWasZl1r0aidBY45HmB9uAzbcWmzjoKI/S2K18FUUAFohQ2Dx+K6zHwuXOGkKXYaxBXRc4C5DrhXB5P+iyyQm6qdoylzu/DOw6dmNNAoeth82FYPGkL2PfJC1YHFspkf+zMDzuVqpSrKL78pNIByBif2+G91PZyXvTW178rD09pCia3YSlqfd3IMSI="'
+        }.items()
