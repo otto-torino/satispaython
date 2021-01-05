@@ -17,12 +17,12 @@ def test_authentication(key_id, key):
 def create_payment(key_id, key, amount_unit, currency, callback_url, expiration_date=None, external_code=None, metadata=None, idempotency_key=None, staging=False):
     target = '/g_business/v1/payments'
     body = { 'flow': 'MATCH_CODE', 'amount_unit': amount_unit, 'currency': currency, 'callback_url': callback_url }
+    if expiration_date:
+        body.update({ 'expiration_date': expiration_date })
     if external_code:
         body.update({ 'external_code': external_code })
     if metadata:
         body.update({ 'metadata': metadata })
-    if expiration_date:
-        body.update({ 'expiration_date': expiration_date })
     return send_request(key_id, key, 'post', target, body, idempotency_key, staging)
 
 
