@@ -9,7 +9,7 @@ def generate_key():
 def write_key(key, path, password=None):
     if password:
         password = password.encode('utf-8')
-        encryption_algorithm = _serialization.BestAvailableEncryption(password) 
+        encryption_algorithm = _serialization.BestAvailableEncryption(password)
     else:
         encryption_algorithm = _serialization.NoEncryption()
     pem = key.private_bytes(encoding=_serialization.Encoding.PEM, format=_serialization.PrivateFormat.PKCS8, encryption_algorithm=encryption_algorithm)

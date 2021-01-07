@@ -1,4 +1,4 @@
-from pytest import fixture, raises, mark
+from pytest import fixture, raises
 from datetime import datetime
 from cryptography.hazmat.primitives import serialization
 from satispaython.utils import generate_key, write_key, load_key, format_datetime
@@ -9,23 +9,23 @@ def key_path(tmp_path_factory):
     return tmp_path_factory.getbasetemp().joinpath('test.pem')
 
 
-class TestDateUtils:
+class Test_Date_Utils:
 
     def test_format_datetime(self):
         date = datetime(2020, 1, 1)
         assert format_datetime(date) == '2020-01-01T00:00:00.000Z'
 
 
-class TestKeyUtils:
+class Test_Key_Utils:
 
-    class TestGenerateKey:
+    class Test_Generate_Key:
 
         def test_generate_key(self):
             key = generate_key()
             assert key.private_numbers().public_numbers.e == 65537
             assert key.key_size == 4096
 
-    class TestWriteKey:
+    class Test_Write_Key:
 
         def test_write_key(self, key, key_path):
             write_key(key, key_path)
@@ -39,11 +39,12 @@ class TestKeyUtils:
             write_key(key, key_path, 'password')
             assert key_path.exists()
             with open(key_path, 'rb') as file:
-                key = serialization.load_pem_private_key(file.read(), b'password')
+                data = file.read()
+                key = serialization.load_pem_private_key(data, b'password')
                 assert key.private_numbers().public_numbers.e == 65537
                 assert key.key_size == 4096
 
-    class TestLoadKey:
+    class Test_Load_Key:
 
         def test_load_unencrypted_key(self, key, key_path):
             write_key(key, key_path)

@@ -1,4 +1,5 @@
-import requests, json
+import requests
+import json
 
 from base64 import b64encode
 from hashlib import sha256
@@ -15,7 +16,7 @@ def compute_digest(body):
     body = body.encode()
     digest = b64encode(sha256(body).digest())
     digest = digest.decode()
-    return f'SHA-256={digest}' 
+    return f'SHA-256={digest}'
 
 
 def generate_string(method, target, host, date, digest):
@@ -24,14 +25,13 @@ def generate_string(method, target, host, date, digest):
 
 def sign_string(key, string):
     string = string.encode()
-    padding = paddings.PSS(mgf=paddings.MGF1(hashes.SHA256()), salt_length=paddings.PSS.MAX_LENGTH)
     signature = key.sign(data=string, padding=paddings.PKCS1v15(), algorithm=hashes.SHA256())
     return b64encode(signature).decode()
 
 
 def compute_authorization_header(key_id, signature):
     return f'Signature keyId="{key_id}", algorithm="rsa-sha256", headers="(request-target) host date digest", signature="{signature}"'
-    
+
 
 def compute_authorization_headers(key_id, key, method, target, host, body):
     date = get_formatted_date()
@@ -39,15 +39,15 @@ def compute_authorization_headers(key_id, key, method, target, host, body):
     string = generate_string(method, target, host, date, digest)
     signature = sign_string(key, string)
     authorization_header = compute_authorization_header(key_id, signature)
-    return { 'Host': host, 'Date': date, 'Digest': digest, 'Authorization': authorization_header }
+    return {'Host': host, 'Date': date, 'Digest': digest, 'Authorization': authorization_header}
 
 
 def generate_headers(key_id, key, method, target, host, body, idempotency_key):
-    headers = { 'Accept': 'application/json' }
+    headers = {'Accept': 'application/json'}
     if method in ('post', 'put'):
-        headers.update({ 'Content-Type': 'application/json' })
+        headers.update({'Content-Type': 'application/json'})
     if idempotency_key:
-        headers.update({ 'Idempotency-Key': idempotency_key })
+        headers.update({'Idempotency-Key': idempotency_key})
     if key_id and key:
         headers.update(compute_authorization_headers(key_id, key, method, target, host, body))
     return headers

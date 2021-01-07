@@ -16,9 +16,26 @@ cryptography = "^3.3.1"
 
 [tool.poetry.dev-dependencies]
 responses = "^0.12.1"
-pytest-cov = "^2.10.1"
 pytest-freezegun = "^0.4.2"
+pytest-cov = "^2.10.1"
+pytest-spec = "^3.0.6"
+flakehell = "^0.7.1"
 tox = "^3.20.1"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+required_plugins = ["pytest-freezegun"]
+minversion = "6.2"
+
+[tool.coverage.run]
+source = ["satispaython"]
+
+#[tool.flakehell]
+#exclude = ["README.md"]
+
+[tool.flakehell.plugins]
+pyflakes = ["+*", "-E501"]
+pycodestyle = ["+*", "-E501"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
