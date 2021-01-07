@@ -144,7 +144,7 @@ class TestGetPaymentDetails:
 
     @responses.activate
     @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
-    def test_staging(self, key_id, key, payment_id):
+    def test_production(self, key_id, key, payment_id):
         responses.add(responses.GET, f'https://authservices.satispay.com/g_business/v1/payments/{payment_id}', body='{}', status=200)
         response = satispaython.get_payment_details(key_id, key, payment_id)
         request = responses.calls[0].request
