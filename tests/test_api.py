@@ -2,7 +2,7 @@ import responses, json, satispaython
 
 from freezegun import freeze_time
 from cryptography.hazmat.primitives import serialization
-from pytest import fixture
+from pytest import fixture, mark
 
 
 @fixture(scope='module')
@@ -50,7 +50,7 @@ class TestObtainKeyID:
 class TestAuthentication:
 
     @responses.activate
-    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_authentication(self, key_id, key):
         responses.add(responses.POST, 'https://staging.authservices.satispay.com/wally-services/protocol/tests/signature', body='{}', status=200)
         response = satispaython.test_authentication(key_id, key)
@@ -70,7 +70,7 @@ class TestAuthentication:
 class TestCreatePaymet:
 
     @responses.activate
-    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_staging(self, key_id, key):
         responses.add(responses.POST, 'https://staging.authservices.satispay.com/g_business/v1/payments', body='{}', status=200)
         response = satispaython.create_payment(key_id, key, 100, 'EUR', 'https://test.test?payment_id={uuid}', '2019-03-18T16:10:24.000Z', 'test_code', {'metadata': 'test'}, 'test_idempotency_key', True)
@@ -97,7 +97,7 @@ class TestCreatePaymet:
         }.items()
 
     @responses.activate
-    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_production(self, key_id, key):
         responses.add(responses.POST, 'https://authservices.satispay.com/g_business/v1/payments', body='{}', status=200)
         response = satispaython.create_payment(key_id, key, 100, 'EUR', 'https://test.test?payment_id={uuid}', '2019-03-18T16:10:24.000Z', 'test_code', {'metadata': 'test'}, 'test_idempotency_key')
@@ -126,7 +126,7 @@ class TestCreatePaymet:
 class TestGetPaymentDetails:
 
     @responses.activate
-    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_staging(self, key_id, key, payment_id):
         responses.add(responses.GET, f'https://staging.authservices.satispay.com/g_business/v1/payments/{payment_id}', body='{}', status=200)
         response = satispaython.get_payment_details(key_id, key, payment_id, True)
@@ -143,7 +143,7 @@ class TestGetPaymentDetails:
         }.items()
 
     @responses.activate
-    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_production(self, key_id, key, payment_id):
         responses.add(responses.GET, f'https://authservices.satispay.com/g_business/v1/payments/{payment_id}', body='{}', status=200)
         response = satispaython.get_payment_details(key_id, key, payment_id)

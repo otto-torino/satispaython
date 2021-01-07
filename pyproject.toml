@@ -11,12 +11,13 @@ classifiers = ["Topic :: Software Development :: Libraries :: Python Modules"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-requests = "^2"
-cryptography = "^3"
+requests = "^2.23"
+cryptography = "^3.3"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6"
-responses = "^0"
+responses = "^0.12"
+pytest-cov = "^2.10"
+pytest-freezegun = "^0.4.2"
 
 [build-system]
 requires = ["poetry>=0.12"]
