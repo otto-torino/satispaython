@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "satispaython"
-version = "0.2.4"
+version = "0.2.5"
 description = "A simple library to manage Satispay payments following the Web-button flow."
 license = "GPL-3.0-or-later"
 authors = ["Daniele Pira <daniele.pira@otto.to.it>"]
