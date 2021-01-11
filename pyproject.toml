@@ -1,3 +1,7 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
 name = "satispaython"
 version = "0.2.5"
@@ -8,6 +12,7 @@ readme = "README.md"
 repository = "https://github.com/otto-torino/satispaython"
 keywords = ["python", "satispay"]
 classifiers = ["Topic :: Software Development :: Libraries :: Python Modules"]
+packages = [{include = "satispaython", from="src"}]
 
 [tool.poetry.dependencies]
 python = "^3.6"
@@ -18,25 +23,43 @@ cryptography = "^3.3.1"
 responses = "^0.12.1"
 pytest-freezegun = "^0.4.2"
 pytest-cov = "^2.10.1"
-pytest-spec = "^3.0.6"
-flakehell = "^0.7.1"
 tox = "^3.20.1"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 required_plugins = ["pytest-freezegun"]
 minversion = "6.2"
+addopts = "--cov --no-cov-on-fail"
 
 [tool.coverage.run]
 source = ["satispaython"]
 
-#[tool.flakehell]
-#exclude = ["README.md"]
+[tool.coverage.paths]
+source = ["satispaython", ".tox/py*/lib/python*/site-packages/satispaython"]
 
-[tool.flakehell.plugins]
-pyflakes = ["+*", "-E501"]
-pycodestyle = ["+*", "-E501"]
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+minversion = 3.20
+envlist = clean,py36,py37,py38,py39,report
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[testenv]
+setenv = py{36,37,38,39}: COVERAGE_FILE=.coverage.{envname}
+depends =
+    {py36,py37,py38,py39}: clean
+    report: py36,py37,py38,py39
+deps =
+    responses
+    pytest-freezegun
+    pytest-cov
+commands = pytest
+
+[testenv:clean]
+deps = coverage[toml]
+commands = coverage erase
+
+[testenv:report]
+deps = coverage[toml]
+commands = coverage combine
+"""
