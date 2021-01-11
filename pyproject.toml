@@ -35,7 +35,7 @@ addopts = "--cov --no-cov-on-fail"
 source = ["satispaython"]
 
 [tool.coverage.paths]
-source = ["satispaython", ".tox/py*/lib/python*/site-packages/satispaython"]
+source = ["src/satispaython", ".tox/py*/lib/python*/site-packages/satispaython"]
 
 [tool.tox]
 legacy_tox_ini = """
