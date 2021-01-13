@@ -38,7 +38,7 @@ rsa_key = load_key('path/to/file.pem')
 
 > :information_source: The function `write_key` stores the key in the PEM format. If you generate the key with any other method and you would like to use the `load_key` function, please make sure the key is stored within a file in the PEM format.
 
-> :information_source: Satispaython key management is based on [`cryptography`](https://cryptography.io/en/latest/) so all the functions which require an RSA key parameter expect an object of the class [`RSAPrivateKey`](https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey). If you don't use the `load_key` function then make sure your key is an instance of [`RSAPrivateKey`](https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey).
+> :information_source: Satispaython key management is based on `cryptography` so all the functions which require an RSA key parameter expect an object of the class [`RSAPrivateKey`](https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa.html#cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey). If you don't use the `load_key` function then make sure your key is an instance of `RSAPrivateKey`.
 
 You may protect your key with a password simply adding the `password` parameter:
 
@@ -49,9 +49,9 @@ rsa_key = load_key('path/to/file.pem', password='mypassword')
 
 ### Satispay API
 
-Satispaython web requests are based on [`requests`](https://requests.readthedocs.io/en/master/) so the following functions return an instance of [`Response`](https://requests.readthedocs.io/en/latest/api/#requests.Response). On success, the Satispay API responds with a JSON encoded body, so you can simply check for the [`response.status_code`](https://requests.readthedocs.io/en/latest/api/#requests.Response.status_code) and eventually get the content with [`response.json()`](https://requests.readthedocs.io/en/latest/api/#requests.Response.json).
+Satispaython web requests are based on `requests` so the following functions return an instance of [`Response`](https://requests.readthedocs.io/en/latest/api/#requests.Response). On success, the Satispay API responds with a JSON encoded body, so you can simply check for the [`response.status_code`](https://requests.readthedocs.io/en/latest/api/#requests.Response.status_code) and eventually get the content with [`response.json()`](https://requests.readthedocs.io/en/latest/api/#requests.Response.json).
 
-> :information_source: If you need to use the Sandbox endpoints be sure to read the [section](https://github.com/otto-torino/satispaython#sandbox-endpoints).
+> :information_source: If you need to use the Sandbox endpoints be sure to read the [proper section](https://github.com/otto-torino/satispaython#sandbox-endpoints).
 
 In order to use the [Satispay API](https://developers.satispay.com/reference) simply import satispaython:
 
@@ -77,7 +77,7 @@ response = satispay.obtain_key_id(rsa_key, token)
 response = satispay.test_authentication(key_id, rsa_key)
 ```
 
-> :information_source: Authentication tests work on [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints only.
+> :information_source: Authentication tests work on Sandbox endpoints only.
 
 #### Create a payment
 
@@ -103,7 +103,7 @@ response = satispay.get_payment_details(key_id, rsa_key, payment_id)
 
 ### Sandbox endpoints
 
-By default satispaython uses the production Satispay API. If you need to use the [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints, simply set the `staging` parameter to `True`:
+By default satispaython points to the production Satispay API. If you need to use the [Sandbox](https://developers.satispay.com/docs/sandbox-account) endpoints, simply set the `staging` parameter to `True`:
 
 ```python
 response = satispay.obtain_key_id(rsa_key, token, staging=True)
