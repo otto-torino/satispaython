@@ -1,5 +1,7 @@
 # satispaython
 
+[![codecov](https://codecov.io/gh/otto-torino/satispaython/branch/master/graph/badge.svg?token=ZZUG2WJEVL)](https://codecov.io/gh/otto-torino/satispaython)
+
 A simple library to manage Satispay payments following the [Web-button flow](https://developers.satispay.com/docs/web-button-pay).
 
 ## Requirements
