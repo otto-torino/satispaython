@@ -1,6 +1,6 @@
 # satispaython
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/otto-torino/satispaython/test?style=flat-square)](https://github.com/otto-torino/satispaython/actions?query=workflow%3Atest)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/otto-torino/satispaython/test?style=flat-square)](https://github.com/otto-torino/satispaython/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/otto-torino/satispaython?style=flat-square)](https://codecov.io/gh/otto-torino/satispaython)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/satispaython?style=flat-square)](https://pypi.org/project/satispaython)
 
@@ -8,9 +8,8 @@ A simple library to manage Satispay payments following the [Web-button flow](htt
 
 ## Requirements
 
-* python >= 3.8
-* [`cryptography`](https://github.com/pyca/cryptography) >= 3.2
-* [`requests`](https://github.com/psf/requests) >= 2.24
+* [`cryptography`](https://github.com/pyca/cryptography) >= 3.3
+* [`requests`](https://github.com/psf/requests) >= 2.25
 
 ## Installation
 
