@@ -130,3 +130,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Secrets and misc
+
+private.pem
+key-id.txt
+test.py
