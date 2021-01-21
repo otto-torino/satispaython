@@ -19,7 +19,7 @@ You can install this package with pip: `pip install satispaython`.
 
 ### Key generation
 
-Firs of all you need a RSA private key. You may generate the key by yourself or you may use the provided utility functions:
+First of all you need a RSA private key. You may generate the key by yourself or you may use the provided utility functions:
 
 ```python
 from satispaython.utils import generate_key, write_key
