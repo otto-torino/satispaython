@@ -1,5 +1,6 @@
 from cryptography.hazmat.primitives import serialization
-from satispaython._core import send_request
+
+from ._core import send_request
 
 
 def obtain_key_id(key, token, staging=False):

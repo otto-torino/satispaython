@@ -1,5 +1,5 @@
-from cryptography.hazmat.primitives.asymmetric import rsa as _rsa
 from cryptography.hazmat.primitives import serialization as _serialization
+from cryptography.hazmat.primitives.asymmetric import rsa as _rsa
 
 
 def generate_key():
@@ -8,7 +8,7 @@ def generate_key():
 
 def write_key(key, path, password=None):
     if password:
-        password = password.encode('utf-8')
+        password = password.encode()
         encryption_algorithm = _serialization.BestAvailableEncryption(password)
     else:
         encryption_algorithm = _serialization.NoEncryption()
@@ -19,7 +19,7 @@ def write_key(key, path, password=None):
 
 def load_key(path, password=None):
     if password:
-        password = password.encode('utf-8')
+        password = password.encode()
     with open(path, 'rb') as file:
         return _serialization.load_pem_private_key(file.read(), password)
 

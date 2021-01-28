@@ -1,4 +1,4 @@
-from ._api import obtain_key_id, test_authentication, create_payment, get_payment_details
+from ._api import create_payment, get_payment_details, obtain_key_id, test_authentication
 
 try:
     import importlib.metadata as importlib_metadata
