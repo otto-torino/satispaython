@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "satispaython"
-version = "0.2.5"
+version = "0.3.0"
 description = "A simple library to manage Satispay payments following the Web-button flow."
 license = "MIT"
 authors = ["Daniele Pira <daniele.pira@otto.to.it>"]
@@ -16,19 +16,19 @@ packages = [{include = "satispaython", from="src"}]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-requests = "^2.25.1"
 cryptography = "^3.3.1"
+httpx = "^0.16.1"
 
 [tool.poetry.dev-dependencies]
-responses = "^0.12.1"
+pytest-cov = "^2.11.1"
 pytest-freezegun = "^0.4.2"
-pytest-cov = "^2.10.1"
-tox = "^3.20.1"
+respx = "^0.16.3"
+tox = "^3.21.3"
+pylint = "^2.6.0"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-required_plugins = ["pytest-freezegun"]
-minversion = "6.2"
+required_plugins = ["pytest-freezegun", "pytest-cov"]
 addopts = "--cov --no-cov-on-fail"
 
 [tool.coverage.run]
@@ -41,7 +41,6 @@ source = ["src/satispaython", ".tox/py*/lib/python*/site-packages/satispaython"]
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-minversion = 3.20
 envlist = clean,py36,py37,py38,py39,report
 
 [testenv]
@@ -50,9 +49,9 @@ depends =
     {py36,py37,py38,py39}: clean
     report: py36,py37,py38,py39
 deps =
-    responses
-    pytest-freezegun
     pytest-cov
+    pytest-freezegun
+    respx
 commands = pytest
 
 [testenv:clean]
