@@ -1,6 +1,6 @@
 # satispaython
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/otto-torino/satispaython/CI?style=flat-square)](https://github.com/otto-torino/satispaython/actions)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/otto-torino/satispaython/Test?style=flat-square)](https://github.com/otto-torino/satispaython/actions)
 [![Codecov](https://img.shields.io/codecov/c/github/otto-torino/satispaython?style=flat-square)](https://codecov.io/gh/otto-torino/satispaython)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/satispaython?style=flat-square)](https://pypi.org/project/satispaython)
 
