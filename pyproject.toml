@@ -51,6 +51,7 @@ depends =
 deps =
     pytest-cov
     pytest-freezegun
+    pytest-asyncio
     respx
 commands = pytest
 
