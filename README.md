@@ -110,3 +110,31 @@ response = satispaython.obtain_key_id(rsa_key, token, staging=True)
 response = satispaython.create_payment(key_id, rsa_key, amount_unit, currency, body_params=None, headers=None, staging=True)
 response = satispaython.get_payment_details(key_id, rsa_key, payment_id, headers=None, staging=True)
 ```
+
+## Clients, AsyncClients and Auth
+
+Satispaython offers specialized versions of `httpx`'s [`Client`](https://www.python-httpx.org/api/#client), [`AsyncClient`](https://www.python-httpx.org/api/#asyncclient) and [`Auth`](https://www.python-httpx.org/advanced/#customizing-authentication) classes:
+
+```python
+from satispaython import SatispayClient
+
+with SatispayClient(key_id, rsa_key, staging=True) as client:
+    response = client.create_payment(100, 'EUR', body_params=None, headers=None)
+    response = client.get_payment_details(payment_id, headers=None)
+```
+
+```python
+from satispaython import AsyncSatispayClient
+
+async with AsyncSatispayClient(key_id, rsa_key, staging=True) as client:
+    response = await client.create_payment(100, 'EUR', body_params=None, headers=None)
+    response = await client.get_payment_details(payment_id, headers=None)
+```
+
+```python
+import httpx
+from satispaython import SatispayAuth
+
+auth = SatispayAuth(key_id, rsa_key)
+response = httpx.post('https://staging.authservices.satispay.com/wally-services/protocol/tests/signature', auth=auth)
+```

@@ -6,6 +6,9 @@ from cryptography.hazmat.primitives import serialization
 from pytest import fixture, mark
 
 import satispaython
+from satispaython import AsyncSatispayClient
+
+import pytest
 
 
 @fixture(scope='module')
@@ -95,7 +98,6 @@ class TestTestAuthentication:
     @respx.mock
     @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_test_authentication(self, key_id, rsa_key, test_authentication_signature):
-
         route = respx.post('https://staging.authservices.satispay.com/wally-services/protocol/tests/signature')
         satispaython.test_authentication(key_id, rsa_key)
         assert route.called
@@ -188,6 +190,82 @@ class TestCreatePaymet:
                                                    f'headers="(request-target) host date digest", ' \
                                                    f'signature="{create_payment_production_signature}"'
 
+    @pytest.mark.asyncio
+    @respx.mock
+    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    async def test_staging_async(self, key_id, rsa_key, create_payment_staging_signature):
+        route = respx.post('https://staging.authservices.satispay.com/g_business/v1/payments')
+        body_params = {
+            'callback_url': 'https://test.test?payment_id={uuid}',
+            'expiration_date': '2019-03-18T16:10:24.000Z',
+            'external_code': 'test_code',
+            'metadata': {'metadata': 'test'}
+        }
+        headers = {'Idempotency-Key': 'test_idempotency_key'}
+        async with AsyncSatispayClient(key_id, rsa_key, True) as client:
+            await client.create_payment(100, 'EUR', body_params, headers)
+        assert route.called
+        assert route.call_count == 1
+        request = route.calls.last.request
+        assert request.method == 'POST'
+        assert json.loads(request.content.decode()) == {
+            'flow': 'MATCH_CODE',
+            'amount_unit': 100,
+            'currency': 'EUR',
+            'callback_url': 'https://test.test?payment_id={uuid}',
+            'expiration_date': '2019-03-18T16:10:24.000Z',
+            'external_code': 'test_code',
+            'metadata': {'metadata': 'test'}
+        }
+        assert request.headers['Idempotency-Key'] == 'test_idempotency_key'
+        assert request.headers['Accept'] == 'application/json'
+        assert request.headers['Content-Type'] == 'application/json'
+        assert request.headers['Host'] == 'staging.authservices.satispay.com'
+        assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
+        assert request.headers['Digest'] == 'SHA-256=gx/Ygi6/J4wFiNAWmbfiE4hZBN/rndG1On+OXyKAaSQ='
+        assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
+                                                   f'algorithm="rsa-sha256", ' \
+                                                   f'headers="(request-target) host date digest", ' \
+                                                   f'signature="{create_payment_staging_signature}"'
+
+    @pytest.mark.asyncio
+    @respx.mock
+    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    async def test_production_async(self, key_id, rsa_key, create_payment_production_signature):
+        route = respx.post('https://authservices.satispay.com/g_business/v1/payments')
+        body_params = {
+            'callback_url': 'https://test.test?payment_id={uuid}',
+            'expiration_date': '2019-03-18T16:10:24.000Z',
+            'external_code': 'test_code',
+            'metadata': {'metadata': 'test'}
+        }
+        headers = {'Idempotency-Key': 'test_idempotency_key'}
+        async with AsyncSatispayClient(key_id, rsa_key) as client:
+            await client.create_payment(100, 'EUR', body_params, headers)
+        assert route.called
+        assert route.call_count == 1
+        request = route.calls.last.request
+        assert request.method == 'POST'
+        assert json.loads(request.content.decode()) == {
+            'flow': 'MATCH_CODE',
+            'amount_unit': 100,
+            'currency': 'EUR',
+            'callback_url': 'https://test.test?payment_id={uuid}',
+            'expiration_date': '2019-03-18T16:10:24.000Z',
+            'external_code': 'test_code',
+            'metadata': {'metadata': 'test'}
+        }
+        assert request.headers['Idempotency-Key'] == 'test_idempotency_key'
+        assert request.headers['Accept'] == 'application/json'
+        assert request.headers['Content-Type'] == 'application/json'
+        assert request.headers['Host'] == 'authservices.satispay.com'
+        assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
+        assert request.headers['Digest'] == 'SHA-256=gx/Ygi6/J4wFiNAWmbfiE4hZBN/rndG1On+OXyKAaSQ='
+        assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
+                                                   f'algorithm="rsa-sha256", ' \
+                                                   f'headers="(request-target) host date digest", ' \
+                                                   f'signature="{create_payment_production_signature}"'
+
 
 class TestGetPaymentDetails:
 
@@ -215,6 +293,48 @@ class TestGetPaymentDetails:
     def test_production(self, key_id, rsa_key, payment_id, get_payment_details_production_signature):
         route = respx.get(f'https://authservices.satispay.com/g_business/v1/payments/{payment_id}')
         satispaython.get_payment_details(key_id, rsa_key, payment_id)
+        assert route.called
+        assert route.call_count == 1
+        request = route.calls.last.request
+        assert request.method == 'GET'
+        assert request.content is b''
+        assert request.headers['Accept'] == 'application/json'
+        assert request.headers['Host'] == 'authservices.satispay.com'
+        assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
+        assert request.headers['Digest'] == 'SHA-256=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='
+        assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
+                                                   f'algorithm="rsa-sha256", ' \
+                                                   f'headers="(request-target) host date digest", ' \
+                                                   f'signature="{get_payment_details_production_signature}"'
+
+    @pytest.mark.asyncio
+    @respx.mock
+    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    async def test_staging_async(self, key_id, rsa_key, payment_id, get_payment_details_staging_signature):
+        route = respx.get(f'https://staging.authservices.satispay.com/g_business/v1/payments/{payment_id}')
+        async with AsyncSatispayClient(key_id, rsa_key, True) as client:
+            await client.get_payment_details(payment_id)
+        assert route.called
+        assert route.call_count == 1
+        request = route.calls.last.request
+        assert request.method == 'GET'
+        assert request.content is b''
+        assert request.headers['Accept'] == 'application/json'
+        assert request.headers['Host'] == 'staging.authservices.satispay.com'
+        assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
+        assert request.headers['Digest'] == 'SHA-256=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='
+        assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
+                                                   f'algorithm="rsa-sha256", ' \
+                                                   f'headers="(request-target) host date digest", ' \
+                                                   f'signature="{get_payment_details_staging_signature}"'
+
+    @pytest.mark.asyncio
+    @respx.mock
+    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    async def test_production_async(self, key_id, rsa_key, payment_id, get_payment_details_production_signature):
+        route = respx.get(f'https://authservices.satispay.com/g_business/v1/payments/{payment_id}')
+        async with AsyncSatispayClient(key_id, rsa_key) as client:
+            await client.get_payment_details(payment_id)
         assert route.called
         assert route.call_count == 1
         request = route.calls.last.request

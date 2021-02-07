@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "satispaython"
-version = "0.3.0"
+version = "0.3.1"
 description = "A simple library to manage Satispay payments following the Web-button flow."
 license = "MIT"
 authors = ["Daniele Pira <daniele.pira@otto.to.it>"]
@@ -22,13 +22,13 @@ httpx = "^0.16.1"
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.11.1"
 pytest-freezegun = "^0.4.2"
+pytest-asyncio = "^0.14.0"
 respx = "^0.16.3"
 tox = "^3.21.3"
-pylint = "^2.6.0"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-required_plugins = ["pytest-freezegun", "pytest-cov"]
+required_plugins = ["pytest-freezegun", "pytest-cov", "pytest-asyncio"]
 addopts = "--cov --no-cov-on-fail"
 
 [tool.coverage.run]

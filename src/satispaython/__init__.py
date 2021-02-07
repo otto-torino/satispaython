@@ -1,6 +1,6 @@
 from ._api import create_payment, get_payment_details, obtain_key_id, test_authentication
 from ._auth import SatispayAuth
-from ._client import SatispayClient
+from ._client import SatispayClient, AsyncSatispayClient
 
 try:
     import importlib.metadata as importlib_metadata
@@ -15,5 +15,6 @@ __all__ = [
     'create_payment',
     'get_payment_details',
     'SatispayClient',
-    'SatispayAuth'
+    'AsyncSatispayClient',
+    'SatispayAuth',
 ]
