@@ -17,7 +17,7 @@ def test_authentication(key_id, rsa_key):
     target = '/wally-services/protocol/tests/signature'
     headers = {'Content-Type': 'application/json'}
     with SatispayClient(key_id, rsa_key, True) as client:
-        client.post(target, headers=headers)
+        return client.post(target, headers=headers)
 
 
 def create_payment(key_id, rsa_key, amount_unit, currency, body_params=None, headers=None, staging=False):
