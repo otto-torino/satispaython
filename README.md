@@ -17,21 +17,29 @@ You can install this package with pip: `pip install satispaython`.
 
 ## Usage
 
+Type hints are available for all public functions.
+
 ### Key generation
 
 First of all you need a RSA private key. You may generate the key by yourself or you may use the provided utility functions:
 
 ```python
-from satispaython.utils import generate_key, write_key
+from satispaython.utils.utils import generate_key, write_key
 
+# Generate a key
 rsa_key = generate_key()
+
+# Write the key into a file
 write_key(rsa_key, 'path/to/file.pem')
+
+# You can also generate a key and save it directly to a provided path
+rsa_key = generate_key('path/to/file.pem')
 ```
 
 In order to load the key from a PEM encoded file you may use the utility function:
 
 ```python
-from satispaython.utils import load_key
+from satispaython.utils.utils import load_key
 
 rsa_key = load_key('path/to/file.pem')
 ```
@@ -43,8 +51,21 @@ rsa_key = load_key('path/to/file.pem')
 You may protect your key with a password simply adding the `password` parameter:
 
 ```python
-write_key(rsa_key, 'path/to/file.pem', password='mypassword')
-rsa_key = load_key('path/to/file.pem', password='mypassword')
+write_key(rsa_key, 'path/to/file.pem', 'mypassword')
+rsa_key = load_key('path/to/file.pem', 'mypassword')
+rsa_key = generate_key('path/to/file.pem', 'mypassword')
+```
+
+Both functions accept [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) objects:
+
+```python
+from pathlib import Path
+
+path = Path('path/to/file.pem')
+
+rsa_key = generate_key(path, 'mypassword')
+write_key(rsa_key, path, 'mypassword')
+rsa_key = load_key(path, 'mypassword')
 ```
 
 ### Satispay API
@@ -89,7 +110,7 @@ You may use the utility function `format_datetime` to get a correctly formatted 
 
 ```python
 from datetime import datetime, timezone, timedelta
-from satispaython.utils import format_datetime
+from satispaython.utils.utils import format_datetime
 
 expiration_date = datetime.now(timezone.utc) + timedelta(hours=1)
 expiration_date = format_datetime(expiration_date)
@@ -119,7 +140,7 @@ Satispaython offers specialized versions of `httpx`'s [`Client`](https://www.pyt
 from satispaython import SatispayClient
 
 with SatispayClient(key_id, rsa_key, staging=True) as client:
-    response = client.create_payment(100, 'EUR', body_params=None, headers=None)
+    response = client.create_payment(amount_unit, currency, body_params=None, headers=None)
     response = client.get_payment_details(payment_id, headers=None)
 ```
 
@@ -127,7 +148,7 @@ with SatispayClient(key_id, rsa_key, staging=True) as client:
 from satispaython import AsyncSatispayClient
 
 async with AsyncSatispayClient(key_id, rsa_key, staging=True) as client:
-    response = await client.create_payment(100, 'EUR', body_params=None, headers=None)
+    response = await client.create_payment(amount_unit, currency, body_params=None, headers=None)
     response = await client.get_payment_details(payment_id, headers=None)
 ```
 
@@ -136,5 +157,6 @@ import httpx
 from satispaython import SatispayAuth
 
 auth = SatispayAuth(key_id, rsa_key)
-response = httpx.post('https://staging.authservices.satispay.com/wally-services/protocol/tests/signature', auth=auth)
+url = 'https://staging.authservices.satispay.com/wally-services/protocol/tests/signature'
+response = httpx.post(url, auth=auth)
 ```

@@ -148,7 +148,7 @@ class TestCreatePaymet:
         assert request.headers['Content-Type'] == 'application/json'
         assert request.headers['Host'] == 'staging.authservices.satispay.com'
         assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
-        assert request.headers['Digest'] == 'SHA-256=gx/Ygi6/J4wFiNAWmbfiE4hZBN/rndG1On+OXyKAaSQ='
+        assert request.headers['Digest'] == 'SHA-256=dOjZtX6Has9wFZQDmriLhIfThHD11nuxFZNIjp7FwR0='
         assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
                                                    f'algorithm="rsa-sha256", ' \
                                                    f'headers="(request-target) host date digest", ' \
@@ -184,7 +184,7 @@ class TestCreatePaymet:
         assert request.headers['Content-Type'] == 'application/json'
         assert request.headers['Host'] == 'authservices.satispay.com'
         assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
-        assert request.headers['Digest'] == 'SHA-256=gx/Ygi6/J4wFiNAWmbfiE4hZBN/rndG1On+OXyKAaSQ='
+        assert request.headers['Digest'] == 'SHA-256=dOjZtX6Has9wFZQDmriLhIfThHD11nuxFZNIjp7FwR0='
         assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
                                                    f'algorithm="rsa-sha256", ' \
                                                    f'headers="(request-target) host date digest", ' \
@@ -222,7 +222,7 @@ class TestCreatePaymet:
         assert request.headers['Content-Type'] == 'application/json'
         assert request.headers['Host'] == 'staging.authservices.satispay.com'
         assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
-        assert request.headers['Digest'] == 'SHA-256=gx/Ygi6/J4wFiNAWmbfiE4hZBN/rndG1On+OXyKAaSQ='
+        assert request.headers['Digest'] == 'SHA-256=dOjZtX6Has9wFZQDmriLhIfThHD11nuxFZNIjp7FwR0='
         assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
                                                    f'algorithm="rsa-sha256", ' \
                                                    f'headers="(request-target) host date digest", ' \
@@ -260,7 +260,7 @@ class TestCreatePaymet:
         assert request.headers['Content-Type'] == 'application/json'
         assert request.headers['Host'] == 'authservices.satispay.com'
         assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
-        assert request.headers['Digest'] == 'SHA-256=gx/Ygi6/J4wFiNAWmbfiE4hZBN/rndG1On+OXyKAaSQ='
+        assert request.headers['Digest'] == 'SHA-256=dOjZtX6Has9wFZQDmriLhIfThHD11nuxFZNIjp7FwR0='
         assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
                                                    f'algorithm="rsa-sha256", ' \
                                                    f'headers="(request-target) host date digest", ' \

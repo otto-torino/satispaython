@@ -3,12 +3,14 @@ from datetime import datetime
 from cryptography.hazmat.primitives import serialization
 from pytest import fixture, raises
 
-from satispaython.utils import format_datetime, generate_key, load_key, write_key
+from satispaython.utils.utils import format_datetime, generate_key, load_key, write_key
 
 
-@fixture(scope='module')
+@fixture()
 def key_path(tmp_path_factory):
-    return tmp_path_factory.getbasetemp().joinpath('test.pem')
+    path = tmp_path_factory.getbasetemp().joinpath('test.pem')
+    yield path
+    path.unlink()
 
 
 class TestDateUtils:
@@ -23,9 +25,29 @@ class TestKeyUtils:
     class TestGenerateKey:
 
         def test_generate_key(self):
-            key = generate_key()
-            assert key.private_numbers().public_numbers.e == 65537
-            assert key.key_size == 4096
+            rsa_key = generate_key()
+            assert rsa_key.private_numbers().public_numbers.e == 65537
+            assert rsa_key.key_size == 4096
+
+        def test_generate_key_with_path(self, rsa_key, key_path):
+            rsa_key = generate_key(key_path)
+            assert rsa_key.private_numbers().public_numbers.e == 65537
+            assert rsa_key.key_size == 4096
+            assert key_path.exists()
+            with open(key_path, 'rb') as file:
+                rsa_key = serialization.load_pem_private_key(file.read(), None)
+                assert rsa_key.private_numbers().public_numbers.e == 65537
+                assert rsa_key.key_size == 4096
+
+        def test_generate_key_with_password(self, rsa_key, key_path):
+            rsa_key = generate_key(key_path, 'password')
+            assert rsa_key.private_numbers().public_numbers.e == 65537
+            assert rsa_key.key_size == 4096
+            assert key_path.exists()
+            with open(key_path, 'rb') as file:
+                rsa_key = serialization.load_pem_private_key(file.read(), b'password')
+                assert rsa_key.private_numbers().public_numbers.e == 65537
+                assert rsa_key.key_size == 4096
 
     class TestWriteKey:
 
@@ -41,8 +63,7 @@ class TestKeyUtils:
             write_key(rsa_key, key_path, 'password')
             assert key_path.exists()
             with open(key_path, 'rb') as file:
-                data = file.read()
-                rsa_key = serialization.load_pem_private_key(data, b'password')
+                rsa_key = serialization.load_pem_private_key(file.read(), b'password')
                 assert rsa_key.private_numbers().public_numbers.e == 65537
                 assert rsa_key.key_size == 4096
 
