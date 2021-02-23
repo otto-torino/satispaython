@@ -56,7 +56,7 @@ rsa_key = load_key('path/to/file.pem', 'mypassword')
 rsa_key = generate_key('path/to/file.pem', 'mypassword')
 ```
 
-Both functions accept [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) objects:
+These functions accept [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) objects:
 
 ```python
 from pathlib import Path
