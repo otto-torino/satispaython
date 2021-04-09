@@ -1,49 +1,21 @@
-from typing import Optional, Tuple
+from typing import Optional
 
-from httpx import Client, AsyncClient, Headers, URL, Response
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
+from httpx import URL, AsyncClient, Client, Headers, Response
+
 from .auth import SatispayAuth
 
 
-class SatispayClientMixin:
+class SatispayClient(Client):
 
-    @staticmethod
-    def _initialize(
-        key_id: str,
-        rsa_key: RSAPrivateKey,
-        headers: Headers,
-        staging: bool,
-    ) -> Tuple[SatispayAuth, Headers, URL]:
+    def __init__(self, key_id: str, rsa_key: RSAPrivateKey, staging: bool = False, **kwargs) -> None:
         auth = SatispayAuth(key_id, rsa_key)
+        headers = kwargs.get('headers', Headers())
         headers.update({'Accept': 'application/json'})
         if staging:
             base_url = URL('https://staging.authservices.satispay.com')
         else:
             base_url = URL('https://authservices.satispay.com')
-        return auth, headers, base_url
-
-    @staticmethod
-    def _prepare_create_payment(
-        amount_unit: int,
-        currency: str,
-        body_params: dict,
-        headers: Headers
-    ) -> Tuple[URL, dict, Headers]:
-        target = URL('/g_business/v1/payments')
-        headers.update({'Content-Type': 'application/json'})
-        body_params.update({'flow': 'MATCH_CODE', 'amount_unit': amount_unit, 'currency': currency})
-        return target, body_params, headers
-
-    @staticmethod
-    def _prepare_get_payment_details(payment_id: str) -> URL:
-        return URL(f'/g_business/v1/payments/{payment_id}')
-
-
-class SatispayClient(Client, SatispayClientMixin):
-
-    def __init__(self, key_id: str, rsa_key: RSAPrivateKey, staging: bool = False, **kwargs) -> None:
-        headers = kwargs.get('headers', Headers())
-        auth, headers, base_url = self._initialize(key_id, rsa_key, headers, staging)
         super().__init__(auth=auth, headers=headers, base_url=base_url, **kwargs)
 
     def create_payment(
@@ -53,20 +25,32 @@ class SatispayClient(Client, SatispayClientMixin):
         body_params: Optional[dict] = None,
         headers: Optional[Headers] = None
     ) -> Response:
-        body_params, headers = body_params or {}, headers or Headers()
-        target, body, headers = self._prepare_create_payment(amount_unit, currency, body_params, headers)
-        return self.post(target, json=body, headers=headers)
+        target = URL('/g_business/v1/payments')
+        try:
+            headers.update({'Content-Type': 'application/json'})
+        except AttributeError:
+            headers = Headers({'Content-Type': 'application/json'})
+        try:
+            body_params.update({'flow': 'MATCH_CODE', 'amount_unit': amount_unit, 'currency': currency})
+        except AttributeError:
+            body_params = {'flow': 'MATCH_CODE', 'amount_unit': amount_unit, 'currency': currency}
+        return self.post(target, json=body_params, headers=headers)
 
     def get_payment_details(self, payment_id: str, headers: Optional[Headers] = None) -> Response:
-        target = self._prepare_get_payment_details(payment_id)
+        target = URL(f'/g_business/v1/payments/{payment_id}')
         return self.get(target, headers=headers)
 
 
-class AsyncSatispayClient(AsyncClient, SatispayClientMixin):
+class AsyncSatispayClient(AsyncClient):
 
     def __init__(self, key_id: str, rsa_key: RSAPrivateKey, staging: bool = False, **kwargs) -> None:
+        auth = SatispayAuth(key_id, rsa_key)
         headers = kwargs.get('headers', Headers())
-        auth, headers, base_url = self._initialize(key_id, rsa_key, headers, staging)
+        headers.update({'Accept': 'application/json'})
+        if staging:
+            base_url = URL('https://staging.authservices.satispay.com')
+        else:
+            base_url = URL('https://authservices.satispay.com')
         super().__init__(auth=auth, headers=headers, base_url=base_url, **kwargs)
 
     async def create_payment(
@@ -76,10 +60,17 @@ class AsyncSatispayClient(AsyncClient, SatispayClientMixin):
         body_params: Optional[dict] = None,
         headers: Optional[Headers] = None
     ) -> Response:
-        body_params, headers = body_params or {}, headers or Headers()
-        target, body, headers = self._prepare_create_payment(amount_unit, currency, body_params, headers)
-        return await self.post(target, json=body, headers=headers)
+        target = URL('/g_business/v1/payments')
+        try:
+            headers.update({'Content-Type': 'application/json'})
+        except AttributeError:
+            headers = Headers({'Content-Type': 'application/json'})
+        try:
+            body_params.update({'flow': 'MATCH_CODE', 'amount_unit': amount_unit, 'currency': currency})
+        except AttributeError:
+            body_params = {'flow': 'MATCH_CODE', 'amount_unit': amount_unit, 'currency': currency}
+        return await self.post(target, json=body_params, headers=headers)
 
     async def get_payment_details(self, payment_id: str, headers: Optional[Headers] = None) -> Response:
-        target = self._prepare_get_payment_details(payment_id)
+        target = URL(f'/g_business/v1/payments/{payment_id}')
         return await self.get(target, headers=headers)

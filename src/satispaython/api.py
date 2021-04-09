@@ -1,8 +1,10 @@
-from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-from .client import SatispayClient
-from httpx import Response, Headers
 from typing import Optional
+
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
+from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
+from httpx import Headers, Response
+
+from .client import SatispayClient
 
 
 def obtain_key_id(token: str, rsa_key: RSAPrivateKey, staging: bool = False) -> Response:

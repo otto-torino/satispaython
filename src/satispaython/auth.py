@@ -3,10 +3,10 @@ from datetime import datetime, timezone
 from hashlib import sha256
 from typing import Generator
 
+from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.hashes import SHA256
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
-from httpx import Auth, Request, Headers, Response
+from httpx import Auth, Headers, Request, Response
 
 
 class SatispayAuth(Auth):

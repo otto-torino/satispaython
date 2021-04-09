@@ -3,6 +3,7 @@ from pathlib import Path
 
 import respx
 from cryptography.hazmat.primitives import serialization
+from httpx import Headers
 from pytest import fixture, mark
 
 import satispaython
@@ -48,6 +49,20 @@ def create_payment_staging_signature():
 @fixture()
 def create_payment_production_signature():
     path = Path(__file__).resolve().parent / 'data/create_payment_production_signature.txt'
+    with open(path, 'r') as file:
+        return file.read().strip()
+
+
+@fixture()
+def create_payment_staging_no_optionals_signature():
+    path = Path(__file__).resolve().parent / 'data/create_payment_staging_no_optionals_signature.txt'
+    with open(path, 'r') as file:
+        return file.read().strip()
+
+
+@fixture()
+def create_payment_production_no_optionals_signature():
+    path = Path(__file__).resolve().parent / 'data/create_payment_production_no_optionals_signature.txt'
     with open(path, 'r') as file:
         return file.read().strip()
 
@@ -128,7 +143,7 @@ class TestCreatePaymet:
             'external_code': 'test_code',
             'metadata': {'metadata': 'test'}
         }
-        headers = {'Idempotency-Key': 'test_idempotency_key'}
+        headers = Headers({'Idempotency-Key': 'test_idempotency_key'})
         satispaython.create_payment(key_id, rsa_key, 100, 'EUR', body_params, headers, True)
         assert route.called
         assert route.call_count == 1
@@ -164,7 +179,7 @@ class TestCreatePaymet:
             'external_code': 'test_code',
             'metadata': {'metadata': 'test'}
         }
-        headers = {'Idempotency-Key': 'test_idempotency_key'}
+        headers = Headers({'Idempotency-Key': 'test_idempotency_key'})
         satispaython.create_payment(key_id, rsa_key, 100, 'EUR', body_params, headers)
         assert route.called
         assert route.call_count == 1
@@ -265,6 +280,108 @@ class TestCreatePaymet:
                                                    f'algorithm="rsa-sha256", ' \
                                                    f'headers="(request-target) host date digest", ' \
                                                    f'signature="{create_payment_production_signature}"'
+
+    class TestWithNoHeadersAndBody:
+
+        @respx.mock
+        @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+        def test_staging(self, key_id, rsa_key, create_payment_staging_no_optionals_signature):
+            route = respx.post('https://staging.authservices.satispay.com/g_business/v1/payments')
+            satispaython.create_payment(key_id, rsa_key, 100, 'EUR', staging=True)
+            assert route.called
+            assert route.call_count == 1
+            request = route.calls.last.request
+            assert request.method == 'POST'
+            assert json.loads(request.content.decode()) == {
+                'flow': 'MATCH_CODE',
+                'amount_unit': 100,
+                'currency': 'EUR',
+            }
+            assert request.headers['Accept'] == 'application/json'
+            assert request.headers['Content-Type'] == 'application/json'
+            assert request.headers['Host'] == 'staging.authservices.satispay.com'
+            assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
+            assert request.headers['Digest'] == 'SHA-256=a5UF/fcWo+KdzPGADk9XDV/CwKsGyrNLNKGind53oVM='
+            assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
+                                                       f'algorithm="rsa-sha256", ' \
+                                                       f'headers="(request-target) host date digest", ' \
+                                                       f'signature="{create_payment_staging_no_optionals_signature}"'
+
+        @respx.mock
+        @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+        def test_production(self, key_id, rsa_key, create_payment_production_no_optionals_signature):
+            route = respx.post('https://authservices.satispay.com/g_business/v1/payments')
+            satispaython.create_payment(key_id, rsa_key, 100, 'EUR')
+            assert route.called
+            assert route.call_count == 1
+            request = route.calls.last.request
+            assert request.method == 'POST'
+            assert json.loads(request.content.decode()) == {
+                'flow': 'MATCH_CODE',
+                'amount_unit': 100,
+                'currency': 'EUR',
+            }
+            assert request.headers['Accept'] == 'application/json'
+            assert request.headers['Content-Type'] == 'application/json'
+            assert request.headers['Host'] == 'authservices.satispay.com'
+            assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
+            assert request.headers['Digest'] == 'SHA-256=a5UF/fcWo+KdzPGADk9XDV/CwKsGyrNLNKGind53oVM='
+            assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
+                                                       f'algorithm="rsa-sha256", ' \
+                                                       f'headers="(request-target) host date digest", ' \
+                                                       f'signature="{create_payment_production_no_optionals_signature}"'
+
+        @pytest.mark.asyncio
+        @respx.mock
+        @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+        async def test_staging_async(self, key_id, rsa_key, create_payment_staging_no_optionals_signature):
+            route = respx.post('https://staging.authservices.satispay.com/g_business/v1/payments')
+            async with AsyncSatispayClient(key_id, rsa_key, True) as client:
+                await client.create_payment(100, 'EUR')
+            assert route.called
+            assert route.call_count == 1
+            request = route.calls.last.request
+            assert request.method == 'POST'
+            assert json.loads(request.content.decode()) == {
+                'flow': 'MATCH_CODE',
+                'amount_unit': 100,
+                'currency': 'EUR',
+            }
+            assert request.headers['Accept'] == 'application/json'
+            assert request.headers['Content-Type'] == 'application/json'
+            assert request.headers['Host'] == 'staging.authservices.satispay.com'
+            assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
+            assert request.headers['Digest'] == 'SHA-256=a5UF/fcWo+KdzPGADk9XDV/CwKsGyrNLNKGind53oVM='
+            assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
+                                                       f'algorithm="rsa-sha256", ' \
+                                                       f'headers="(request-target) host date digest", ' \
+                                                       f'signature="{create_payment_staging_no_optionals_signature}"'
+
+        @pytest.mark.asyncio
+        @respx.mock
+        @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+        async def test_production_async(self, key_id, rsa_key, create_payment_production_no_optionals_signature):
+            route = respx.post('https://authservices.satispay.com/g_business/v1/payments')
+            async with AsyncSatispayClient(key_id, rsa_key) as client:
+                await client.create_payment(100, 'EUR')
+            assert route.called
+            assert route.call_count == 1
+            request = route.calls.last.request
+            assert request.method == 'POST'
+            assert json.loads(request.content.decode()) == {
+                'flow': 'MATCH_CODE',
+                'amount_unit': 100,
+                'currency': 'EUR',
+            }
+            assert request.headers['Accept'] == 'application/json'
+            assert request.headers['Content-Type'] == 'application/json'
+            assert request.headers['Host'] == 'authservices.satispay.com'
+            assert request.headers['Date'] == 'Mon, 18 Mar 2019 15:10:24 +0000'
+            assert request.headers['Digest'] == 'SHA-256=a5UF/fcWo+KdzPGADk9XDV/CwKsGyrNLNKGind53oVM='
+            assert request.headers['Authorization'] == f'Signature keyId="{key_id}", ' \
+                                                       f'algorithm="rsa-sha256", ' \
+                                                       f'headers="(request-target) host date digest", ' \
+                                                       f'signature="{create_payment_production_no_optionals_signature}"'
 
 
 class TestGetPaymentDetails:

@@ -1,9 +1,11 @@
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, generate_private_key
 from datetime import datetime
 from os import PathLike
 from typing import Optional
-from cryptography.hazmat.primitives.serialization import (BestAvailableEncryption, NoEncryption, Encoding,
-                                                          PrivateFormat, load_pem_private_key)
+
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, generate_private_key
+from cryptography.hazmat.primitives.serialization import (
+    BestAvailableEncryption, Encoding, NoEncryption, PrivateFormat, load_pem_private_key
+)
 
 
 def generate_key(path: Optional[PathLike] = None, password: Optional[str] = None) -> RSAPrivateKey:
@@ -14,9 +16,9 @@ def generate_key(path: Optional[PathLike] = None, password: Optional[str] = None
 
 
 def write_key(rsa_key: RSAPrivateKey, path: PathLike, password: Optional[str] = None) -> None:
-    if password:
+    try:
         encryption_algorithm = BestAvailableEncryption(password.encode())
-    else:
+    except AttributeError:
         encryption_algorithm = NoEncryption()
     pem = rsa_key.private_bytes(Encoding.PEM, PrivateFormat.PKCS8, encryption_algorithm)
     with open(path, 'wb') as file:
@@ -24,8 +26,10 @@ def write_key(rsa_key: RSAPrivateKey, path: PathLike, password: Optional[str] = 
 
 
 def load_key(path: PathLike, password: Optional[str] = None) -> RSAPrivateKey:
-    if password:
+    try:
         password = password.encode()
+    except AttributeError:
+        pass
     with open(path, 'rb') as file:
         return load_pem_private_key(file.read(), password)
 

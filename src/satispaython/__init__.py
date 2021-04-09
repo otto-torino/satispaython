@@ -1,6 +1,6 @@
 from .api import create_payment, get_payment_details, obtain_key_id, test_authentication
 from .auth import SatispayAuth
-from .client import SatispayClient, AsyncSatispayClient
+from .client import AsyncSatispayClient, SatispayClient
 
 try:
     import importlib.metadata as _metadata
