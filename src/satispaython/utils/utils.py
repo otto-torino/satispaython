@@ -1,4 +1,5 @@
 from datetime import datetime
+from contextlib import suppress
 from os import PathLike
 from typing import Optional
 
@@ -26,10 +27,8 @@ def write_key(rsa_key: RSAPrivateKey, path: PathLike, password: Optional[str] = 
 
 
 def load_key(path: PathLike, password: Optional[str] = None) -> RSAPrivateKey:
-    try:
+    with suppress(AttributeError):
         password = password.encode()
-    except AttributeError:
-        pass
     with open(path, 'rb') as file:
         return load_pem_private_key(file.read(), password)
 
