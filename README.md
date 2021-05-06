@@ -119,7 +119,7 @@ expiration_date = format_datetime(expiration_date)
 #### Get payment details
 
 ```python
-response = satispaythonsatispaython.get_payment_details(key_id, rsa_key, payment_id, headers=None)
+response = satispaython.get_payment_details(key_id, rsa_key, payment_id, headers=None)
 ```
 
 ### Sandbox endpoints
