@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from pytest import fixture, raises
 
 from satispaython.utils.utils import format_datetime, generate_key, load_key, write_key
@@ -32,7 +32,7 @@ class TestKeyUtils:
             assert rsa_key.key_size == 4096
             assert key_path.exists()
             with open(key_path, "rb") as file:
-                rsa_key = serialization.load_pem_private_key(file.read(), None)
+                rsa_key = load_pem_private_key(file.read(), None)
                 assert rsa_key.private_numbers().public_numbers.e == 65537
                 assert rsa_key.key_size == 4096
 
@@ -42,7 +42,7 @@ class TestKeyUtils:
             assert rsa_key.key_size == 4096
             assert key_path.exists()
             with open(key_path, "rb") as file:
-                rsa_key = serialization.load_pem_private_key(file.read(), b"password")
+                rsa_key = load_pem_private_key(file.read(), b"password")
                 assert rsa_key.private_numbers().public_numbers.e == 65537
                 assert rsa_key.key_size == 4096
 
@@ -51,7 +51,7 @@ class TestKeyUtils:
             write_key(rsa_key, key_path)
             assert key_path.exists()
             with open(key_path, "rb") as file:
-                rsa_key = serialization.load_pem_private_key(file.read(), None)
+                rsa_key = load_pem_private_key(file.read(), None)
                 assert rsa_key.private_numbers().public_numbers.e == 65537
                 assert rsa_key.key_size == 4096
 
@@ -59,7 +59,7 @@ class TestKeyUtils:
             write_key(rsa_key, key_path, "password")
             assert key_path.exists()
             with open(key_path, "rb") as file:
-                rsa_key = serialization.load_pem_private_key(file.read(), b"password")
+                rsa_key = load_pem_private_key(file.read(), b"password")
                 assert rsa_key.private_numbers().public_numbers.e == 65537
                 assert rsa_key.key_size == 4096
 

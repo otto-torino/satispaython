@@ -2,10 +2,10 @@ import json
 from pathlib import Path
 
 import respx
-from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 from freezegun import freeze_time
 from httpx import Headers
-from pytest import fixture, mark
+from pytest import fixture
 
 import satispaython
 from satispaython import AsyncSatispayClient
@@ -15,8 +15,8 @@ import pytest
 
 @fixture(scope="module")
 def public_key(rsa_key):
-    key_encoding = serialization.Encoding.PEM
-    key_format = serialization.PublicFormat.SubjectPublicKeyInfo
+    key_encoding = Encoding.PEM
+    key_format = PublicFormat.SubjectPublicKeyInfo
     public_pem = rsa_key.public_key().public_bytes(key_encoding, key_format)
     return public_pem.decode()
 
