@@ -8,8 +8,8 @@ A simple library to manage Satispay payments following the [Web-button flow](htt
 
 ## Requirements
 
-* [`cryptography`](https://github.com/pyca/cryptography) >= 3.4
-* [`httpx`](https://github.com/encode/httpx) >= 0.16
+* [`cryptography`](https://github.com/pyca/cryptography) >= 39.0
+* [`httpx`](https://github.com/encode/httpx) >= 0.23
 
 ## Installation
 

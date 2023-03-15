@@ -10,11 +10,11 @@ except ModuleNotFoundError:
 __version__ = _metadata.version(__name__)
 
 __all__ = [
-    'obtain_key_id',
-    'test_authentication',
-    'create_payment',
-    'get_payment_details',
-    'SatispayClient',
-    'AsyncSatispayClient',
-    'SatispayAuth',
+    "obtain_key_id",
+    "test_authentication",
+    "create_payment",
+    "get_payment_details",
+    "SatispayClient",
+    "AsyncSatispayClient",
+    "SatispayAuth",
 ]

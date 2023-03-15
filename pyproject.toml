@@ -1,35 +1,32 @@
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
 [tool.poetry]
 name = "satispaython"
-version = "0.4.0"
+version = "0.5.0"
 description = "A simple library to manage Satispay payments following the Web-button flow."
-license = "MIT"
 authors = ["Daniele Pira <daniele.pira@otto.to.it>"]
+license = "MIT"
 readme = "README.md"
-repository = "https://github.com/otto-torino/satispaython"
-keywords = ["python", "satispay"]
-classifiers = ["Topic :: Software Development :: Libraries :: Python Modules"]
-packages = [{include = "satispaython", from="src"}]
 
 [tool.poetry.dependencies]
-python = "^3.6"
-cryptography = "^3.4"
-httpx = "^0.18"
+python = "^3.7"
+cryptography = "^39.0"
+httpx = "^0.23"
+freezegun = "^1.2"
 
-[tool.poetry.dev-dependencies]
-pytest-cov = "^2.10"
-pytest-freezegun = "^0.4.1"
-pytest-asyncio = "^0.14"
-respx = "^0.17"
-tox = "^3.4"
-pytest-icdiff = "^0.5"
+[tool.poetry.group.dev.dependencies]
+pytest-cov = "^4.0"
+pytest-asyncio = "^0.20"
+respx = "^0.20"
+tox = "^4.4"
+pytest-icdiff = "^0.6"
+black = "^23.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-required_plugins = ["pytest-freezegun", "pytest-cov", "pytest-asyncio"]
+required_plugins = ["pytest-cov", "pytest-asyncio"]
 addopts = "--cov --no-cov-on-fail"
 
 [tool.coverage.run]
@@ -42,13 +39,13 @@ source = ["src/satispaython", ".tox/py*/lib/python*/site-packages/satispaython"]
 legacy_tox_ini = """
 [tox]
 isolated_build = True
-envlist = clean,py36,py37,py38,py39,report
+envlist = clean,py37,py38,py39,py310,py311,report
 
 [testenv]
-setenv = py{36,37,38,39}: COVERAGE_FILE=.coverage.{envname}
+setenv = py{37,38,39}: COVERAGE_FILE=.coverage.{envname}
 depends =
-    {py36,py37,py38,py39}: clean
-    report: py36,py37,py38,py39
+    {py37,py38,py39,py310,py311}: clean
+    report: py37,py38,py39,py310,py311
 deps =
     pytest-cov
     pytest-freezegun
