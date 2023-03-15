@@ -161,7 +161,7 @@ class TestTestAuthentication:
         )
 
 
-class TestCreatePaymet:
+class TestCreatePayment:
     @respx.mock
     @freeze_time("Mon, 18 Mar 2019 15:10:24 +0000")
     def test_staging(self, key_id, rsa_key, create_payment_staging_signature):
