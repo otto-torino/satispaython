@@ -19,28 +19,30 @@ class SatispayAuth(Auth):
     @staticmethod
     def _get_formatted_date() -> str:
         date = datetime.now(timezone.utc)
-        return date.strftime('%a, %d %b %Y %H:%M:%S %z')
+        return date.strftime("%a, %d %b %Y %H:%M:%S %z")
 
     @staticmethod
     def _compute_digest(request: Request) -> str:
         digest = sha256(request.content).digest()
         digest = b64encode(digest).decode()
-        return f'SHA-256={digest}'
+        return f"SHA-256={digest}"
 
     @staticmethod
     def _compose_string(request: Request, date: str, digest: str) -> str:
         method, target, host = request.method, request.url.path, request.url.host
-        return f'(request-target): {method.lower()} {target}\nhost: {host}\ndate: {date}\ndigest: {digest}'
+        return f"(request-target): {method.lower()} {target}\nhost: {host}\ndate: {date}\ndigest: {digest}"
 
     def _sign_string(self, string: str) -> str:
         signature = self._rsa_key.sign(string.encode(), PKCS1v15(), SHA256())
         return b64encode(signature).decode()
 
     def _compose_authorization_header(self, signature: str) -> str:
-        return f'Signature keyId="{self._key_id}", ' \
-               f'algorithm="rsa-sha256", ' \
-               f'headers="(request-target) host date digest", ' \
-               f'signature="{signature}"'
+        return (
+            f'Signature keyId="{self._key_id}", '
+            f'algorithm="rsa-sha256", '
+            f'headers="(request-target) host date digest", '
+            f'signature="{signature}"'
+        )
 
     def _generate_authorization_headers(self, request: Request) -> Headers:
         date = self._get_formatted_date()
@@ -48,7 +50,12 @@ class SatispayAuth(Auth):
         string = self._compose_string(request, date, digest)
         signature = self._sign_string(string)
         authorization_header = self._compose_authorization_header(signature)
-        headers = {'Host': request.url.host, 'Date': date, 'Digest': digest, 'Authorization': authorization_header}
+        headers = {
+            "Host": request.url.host,
+            "Date": date,
+            "Digest": digest,
+            "Authorization": authorization_header,
+        }
         return Headers(headers)
 
     def auth_flow(self, request: Request) -> Generator[Request, Response, None]:
