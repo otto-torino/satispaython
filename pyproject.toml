@@ -18,6 +18,7 @@ pytest-asyncio = "^0.20"
 respx = "^0.20"
 tox = "^4.4"
 pytest-icdiff = "^0.6"
+black = "^23.1"
 
 [build-system]
 requires = ["poetry-core"]
