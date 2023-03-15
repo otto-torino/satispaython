@@ -3,6 +3,7 @@ from pathlib import Path
 
 import respx
 from cryptography.hazmat.primitives import serialization
+from freezegun import freeze_time
 from httpx import Headers
 from pytest import fixture, mark
 
@@ -111,7 +112,7 @@ class TestObtainKeyID:
 class TestTestAuthentication:
 
     @respx.mock
-    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_test_authentication(self, key_id, rsa_key, test_authentication_signature):
         route = respx.post('https://staging.authservices.satispay.com/wally-services/protocol/tests/signature')
         satispaython.test_authentication(key_id, rsa_key)
@@ -134,7 +135,7 @@ class TestTestAuthentication:
 class TestCreatePaymet:
 
     @respx.mock
-    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_staging(self, key_id, rsa_key, create_payment_staging_signature):
         route = respx.post('https://staging.authservices.satispay.com/g_business/v1/payments')
         body_params = {
@@ -170,7 +171,7 @@ class TestCreatePaymet:
                                                    f'signature="{create_payment_staging_signature}"'
 
     @respx.mock
-    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_production(self, key_id, rsa_key, create_payment_production_signature):
         route = respx.post('https://authservices.satispay.com/g_business/v1/payments')
         body_params = {
@@ -207,7 +208,7 @@ class TestCreatePaymet:
 
     @pytest.mark.asyncio
     @respx.mock
-    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     async def test_staging_async(self, key_id, rsa_key, create_payment_staging_signature):
         route = respx.post('https://staging.authservices.satispay.com/g_business/v1/payments')
         body_params = {
@@ -245,7 +246,7 @@ class TestCreatePaymet:
 
     @pytest.mark.asyncio
     @respx.mock
-    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     async def test_production_async(self, key_id, rsa_key, create_payment_production_signature):
         route = respx.post('https://authservices.satispay.com/g_business/v1/payments')
         body_params = {
@@ -284,7 +285,7 @@ class TestCreatePaymet:
     class TestWithNoHeadersAndBody:
 
         @respx.mock
-        @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+        @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
         def test_staging(self, key_id, rsa_key, create_payment_staging_no_optionals_signature):
             route = respx.post('https://staging.authservices.satispay.com/g_business/v1/payments')
             satispaython.create_payment(key_id, rsa_key, 100, 'EUR', staging=True)
@@ -308,7 +309,7 @@ class TestCreatePaymet:
                                                        f'signature="{create_payment_staging_no_optionals_signature}"'
 
         @respx.mock
-        @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+        @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
         def test_production(self, key_id, rsa_key, create_payment_production_no_optionals_signature):
             route = respx.post('https://authservices.satispay.com/g_business/v1/payments')
             satispaython.create_payment(key_id, rsa_key, 100, 'EUR')
@@ -333,7 +334,7 @@ class TestCreatePaymet:
 
         @pytest.mark.asyncio
         @respx.mock
-        @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+        @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
         async def test_staging_async(self, key_id, rsa_key, create_payment_staging_no_optionals_signature):
             route = respx.post('https://staging.authservices.satispay.com/g_business/v1/payments')
             async with AsyncSatispayClient(key_id, rsa_key, True) as client:
@@ -359,7 +360,7 @@ class TestCreatePaymet:
 
         @pytest.mark.asyncio
         @respx.mock
-        @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+        @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
         async def test_production_async(self, key_id, rsa_key, create_payment_production_no_optionals_signature):
             route = respx.post('https://authservices.satispay.com/g_business/v1/payments')
             async with AsyncSatispayClient(key_id, rsa_key) as client:
@@ -387,7 +388,7 @@ class TestCreatePaymet:
 class TestGetPaymentDetails:
 
     @respx.mock
-    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_staging(self, key_id, rsa_key, payment_id, get_payment_details_staging_signature):
         route = respx.get(f'https://staging.authservices.satispay.com/g_business/v1/payments/{payment_id}')
         satispaython.get_payment_details(key_id, rsa_key, payment_id,  staging=True)
@@ -406,7 +407,7 @@ class TestGetPaymentDetails:
                                                    f'signature="{get_payment_details_staging_signature}"'
 
     @respx.mock
-    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     def test_production(self, key_id, rsa_key, payment_id, get_payment_details_production_signature):
         route = respx.get(f'https://authservices.satispay.com/g_business/v1/payments/{payment_id}')
         satispaython.get_payment_details(key_id, rsa_key, payment_id)
@@ -426,7 +427,7 @@ class TestGetPaymentDetails:
 
     @pytest.mark.asyncio
     @respx.mock
-    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     async def test_staging_async(self, key_id, rsa_key, payment_id, get_payment_details_staging_signature):
         route = respx.get(f'https://staging.authservices.satispay.com/g_business/v1/payments/{payment_id}')
         async with AsyncSatispayClient(key_id, rsa_key, True) as client:
@@ -447,7 +448,7 @@ class TestGetPaymentDetails:
 
     @pytest.mark.asyncio
     @respx.mock
-    @mark.freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
+    @freeze_time('Mon, 18 Mar 2019 15:10:24 +0000')
     async def test_production_async(self, key_id, rsa_key, payment_id, get_payment_details_production_signature):
         route = respx.get(f'https://authservices.satispay.com/g_business/v1/payments/{payment_id}')
         async with AsyncSatispayClient(key_id, rsa_key) as client:
